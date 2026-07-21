@@ -1,16 +1,16 @@
 package com.example.dailytaskmanager.data.local.converter
 
-import androidx.room.TypeConverters
+import androidx.room.TypeConverter
 import com.example.dailytaskmanager.data.local.entity.Priority
 
 class Converters {
 
-    @TypeConverters
+    @TypeConverter
     fun fromPriority(priority: Priority) : String {
         return priority.name
     }
 
-    @TypeConverters
+    @TypeConverter
     fun toPriority(priority: String): Priority {
         return Priority.valueOf(priority)
     }
