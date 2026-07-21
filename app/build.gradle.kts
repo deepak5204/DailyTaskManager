@@ -85,4 +85,7 @@ dependencies {
     implementation(libs.room.ktx)
     ksp(libs.room.compiler)
 
+    // ViewModel
+    implementation(libs.lifecycle.viewmodel.ktx)
+
 }
