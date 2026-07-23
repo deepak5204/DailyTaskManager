@@ -58,7 +58,7 @@ val dummyTasks = listOf(
 @Composable
 fun TaskListScreen(
 //    modifier: Modifier = Modifier,
-//    viewModel: TaskViewModel = hiltViewModel()
+    viewModel: TaskViewModel = hiltViewModel()
     ) {
 
 //    val tasks by viewModel.tasks.collectAsState(initial = emptyList())

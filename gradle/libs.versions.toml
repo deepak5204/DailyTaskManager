@@ -18,6 +18,8 @@ room-version = "2.7.2"
 
 lifecycle-viewModel = "2.8.7"
 
+hilt-navigation-compose = "1.2.0"
+
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -46,6 +48,8 @@ room-compiler = { group = "androidx.room", name = "room-compiler", version.ref =
 
 # ViewModel
 lifecycle-viewmodel-ktx = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-ktx", version.ref = "lifecycle-viewModel"}
+
+hilt-navigation-compose = { group = "androidx.hilt", name = "hilt-navigation-compose", version.ref = "hilt-navigation-compose"}
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

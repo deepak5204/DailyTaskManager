@@ -88,4 +88,8 @@ dependencies {
     // ViewModel
     implementation(libs.lifecycle.viewmodel.ktx)
 
+    implementation(libs.hilt.navigation.compose)
+
+    
+
 }
