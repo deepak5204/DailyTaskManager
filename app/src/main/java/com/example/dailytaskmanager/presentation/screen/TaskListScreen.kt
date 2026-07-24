@@ -17,10 +17,12 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.RadioButtonUnchecked
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -46,40 +48,14 @@ import com.example.dailytaskmanager.data.local.entity.Task
 import com.example.dailytaskmanager.presentation.TaskViewModel
 
 
-val dummyTasks = listOf(
-    Task(
-        id = 1,
-        title = "Learn Hilt",
-        description = "Understand dependency injection",
-        priority = Priority.HIGH,
-        category = "Study",
-        isCompleted = false
-    ),
-    Task(
-        id = 2,
-        title = "Complete DailyTaskManager",
-        description = "Finish the Room integration",
-        priority = Priority.MEDIUM,
-        category = "Project",
-        isCompleted = true
-    ),
-    Task(
-        id = 3,
-        title = "Go to Gym",
-        description = "Leg day",
-        priority = Priority.LOW,
-        category = "Health",
-        isCompleted = false
-    )
-)
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TaskListScreen(
 //    modifier: Modifier = Modifier,
     viewModel: TaskViewModel = hiltViewModel(),
 //    onTaskClick: (Task) -> Unit,
-//    onToggleCompletion: (Task) -> Unit
+//    onToggleCompletion: (Task) -> Unit,
+    onAddTaskClick: () -> Unit = {}
     ) {
 
     val tasks by viewModel.tasks.collectAsState(initial = emptyList())
@@ -92,6 +68,18 @@ fun TaskListScreen(
                     Text(text = "Daily Task Manager")
                 }
             )
+        },
+        floatingActionButton = {
+            FloatingActionButton(
+                onClick = onAddTaskClick,
+                containerColor = MaterialTheme.colorScheme.primary,
+                contentColor = MaterialTheme.colorScheme.onPrimary
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Add,
+                    contentDescription = "Add Task"
+                )
+            }
         }
     ) { paddingValues ->
 
