@@ -30,6 +30,8 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -38,8 +40,10 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.dailytaskmanager.data.local.entity.Priority
 import com.example.dailytaskmanager.data.local.entity.Task
+import com.example.dailytaskmanager.presentation.TaskViewModel
 
 
 val dummyTasks = listOf(
@@ -73,12 +77,12 @@ val dummyTasks = listOf(
 @Composable
 fun TaskListScreen(
 //    modifier: Modifier = Modifier,
-//    viewModel: TaskViewModel = hiltViewModel(),
+    viewModel: TaskViewModel = hiltViewModel(),
 //    onTaskClick: (Task) -> Unit,
 //    onToggleCompletion: (Task) -> Unit
     ) {
 
-//    val tasks by viewModel.tasks.collectAsState(initial = emptyList())
+    val tasks by viewModel.tasks.collectAsState(initial = emptyList())
 
 
     Scaffold(
@@ -101,7 +105,7 @@ fun TaskListScreen(
             ),
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            items(dummyTasks){ task ->
+            items(tasks){ task ->
                 TaskCardOutlined(
                     task = task,
                     onTaskClick = {},
@@ -138,7 +142,7 @@ fun TaskCardOutlined(
             containerColor = if (task.isCompleted) Color(0xFFFAFFA) else Color.White
         ),
         border = BorderStroke(
-            width = 1.dp,
+            width = 2.dp,
             color = if (task.isCompleted) Color.LightGray else Color(0xFFE0E0E0)
         )
     ) {
@@ -155,8 +159,8 @@ fun TaskCardOutlined(
             ) {
                 // Category Chip
                 Text(
-                    text = "#${task.category}",
-                    style = MaterialTheme.typography.labelMedium,
+                    text = "${task.category}",
+                    style = MaterialTheme.typography.titleMedium,
                     color = MaterialTheme.colorScheme.primary,
                     fontWeight = FontWeight.Medium
                 )
@@ -168,7 +172,7 @@ fun TaskCardOutlined(
                 ) {
                     Text(
                         text = task.priority.name,
-                        style = MaterialTheme.typography.labelSmall,
+                        style = MaterialTheme.typography.titleMedium,
                         color = if (task.isCompleted) Color.Gray else priorityTextColor,
                         fontWeight = FontWeight.Bold,
                         modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp)
