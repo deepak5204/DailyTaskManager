@@ -27,6 +27,6 @@ class TaskRepository @Inject constructor(
     }
 
     fun getAllTasks(): Flow<List<Task>> {
-        return taskDao.getAllTask()
+        return taskDao.getAllTasks()
     }
 }

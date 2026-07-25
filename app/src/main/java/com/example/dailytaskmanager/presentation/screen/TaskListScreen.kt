@@ -1,8 +1,10 @@
 package com.example.dailytaskmanager.presentation.screen
 
+import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -21,6 +23,7 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.RadioButtonUnchecked
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -32,17 +35,19 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.dailytaskmanager.data.local.entity.Priority
 import com.example.dailytaskmanager.data.local.entity.Task
 import com.example.dailytaskmanager.presentation.TaskViewModel
@@ -51,57 +56,75 @@ import com.example.dailytaskmanager.presentation.TaskViewModel
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TaskListScreen(
-//    modifier: Modifier = Modifier,
     viewModel: TaskViewModel = hiltViewModel(),
-//    onTaskClick: (Task) -> Unit,
-//    onToggleCompletion: (Task) -> Unit,
     onAddTaskClick: () -> Unit = {}
     ) {
 
-    val tasks by viewModel.tasks.collectAsState(initial = emptyList())
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val context = LocalContext.current
 
-
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = {
-                    Text(text = "Daily Task Manager")
-                }
-            )
-        },
-        floatingActionButton = {
-            FloatingActionButton(
-                onClick = onAddTaskClick,
-                containerColor = MaterialTheme.colorScheme.primary,
-                contentColor = MaterialTheme.colorScheme.onPrimary
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Add,
-                    contentDescription = "Add Task"
-                )
-            }
-        }
-    ) { paddingValues ->
-
-        LazyColumn(
+    if(uiState.isLoading){
+        Box(
             modifier = Modifier.fillMaxSize(),
-            contentPadding = PaddingValues(
-                top = paddingValues.calculateTopPadding(),
-                start = 16.dp,
-                end = 16.dp,
-                bottom = 16.dp
-            ),
-            verticalArrangement = Arrangement.spacedBy(12.dp)
-        ) {
-            items(tasks){ task ->
-                TaskCardOutlined(
-                    task = task,
-                    onTaskClick = {},
-                    onToggleCompletion = {}
-                )
+            contentAlignment = Alignment.Center
+        ){
+            CircularProgressIndicator()
+        }
+    }
+
+    else if(uiState.error != null){
+        LaunchedEffect(uiState.error) {
+            uiState.error?.let {
+                Toast.makeText(context, it, Toast.LENGTH_LONG).show()
             }
         }
     }
+    else{
+        val tasks = uiState.tasks
+        Scaffold(
+            topBar = {
+                TopAppBar(
+                    title = {
+                        Text(text = "Daily Task Manager")
+                    }
+                )
+            },
+            floatingActionButton = {
+                FloatingActionButton(
+                    onClick = onAddTaskClick,
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    contentColor = MaterialTheme.colorScheme.onPrimary
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Add,
+                        contentDescription = "Add Task"
+                    )
+                }
+            }
+        ) { paddingValues ->
+
+            LazyColumn(
+                modifier = Modifier.fillMaxSize(),
+                contentPadding = PaddingValues(
+                    top = paddingValues.calculateTopPadding(),
+                    start = 16.dp,
+                    end = 16.dp,
+                    bottom = 16.dp
+                ),
+                verticalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                items(tasks){ task ->
+                    TaskCardOutlined(
+                        task = task,
+                        onTaskClick = {},
+                        onToggleCompletion = {}
+                    )
+                }
+            }
+        }
+    }
+
+
 }
 
 

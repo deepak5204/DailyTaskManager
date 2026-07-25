@@ -41,8 +41,7 @@ class TaskViewModel @Inject constructor(
         }
     }
 
-
-    val tasks = repository.getAllTasks();
+    
 
     fun insertTask(task: Task){
         viewModelScope.launch {
