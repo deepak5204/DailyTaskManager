@@ -88,9 +88,13 @@ dependencies {
     // ViewModel
     implementation(libs.lifecycle.viewmodel.ktx)
 
+    // hilt navigation
     implementation(libs.hilt.navigation.compose)
 
     implementation(libs.androidx.material.icons.extended)
+
+    // compose navigation
+    implementation(libs.navigation.compose)
 
     
 
