@@ -32,14 +32,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.dailytaskmanager.data.local.entity.Priority
+import com.example.dailytaskmanager.data.local.entity.Task
+import com.example.dailytaskmanager.presentation.TaskViewModel
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddTaskScreen(
+    viewModel: TaskViewModel = hiltViewModel(),
+    onSaveClick: () -> Unit,
     onNavigateBack: () -> Unit,
-    onSaveTask: (title: String, description: String, priority: Priority, category: String) -> Unit
 ) {
     var title by remember { mutableStateOf("") }
     var description by remember { mutableStateOf("") }
@@ -160,8 +164,17 @@ fun AddTaskScreen(
             Button (
                 onClick = {
                     if (title.isNotBlank()) {
-                        onSaveTask(title, description, selectedPriority, selectedCategory)
+                        val task = Task(
+                            title = title,
+                            description = description,
+                            priority = selectedPriority,
+                            category = selectedCategory,
+                        )
+                        viewModel.insertTask(task = task)
+
+                        onSaveClick()
                     }
+
                 },
                 enabled = title.isNotBlank(),
                 modifier = Modifier
@@ -185,8 +198,8 @@ fun AddTaskScreen(
 private fun AddTaskScreenPreview() {
     AddTaskScreen(
         onNavigateBack = {},
-        onSaveTask = { title, description, priority, category -> }
-
+        onSaveClick = {},
+        viewModel = hiltViewModel()
     )
     
 }

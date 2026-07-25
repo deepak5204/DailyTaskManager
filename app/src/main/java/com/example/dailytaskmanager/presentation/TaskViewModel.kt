@@ -2,7 +2,6 @@ package com.example.dailytaskmanager.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.dailytaskmanager.data.local.entity.Priority
 import com.example.dailytaskmanager.data.local.entity.Task
 import com.example.dailytaskmanager.data.repository.TaskRepository
 import com.example.dailytaskmanager.presentation.state.TaskUiState
@@ -19,19 +18,6 @@ import javax.inject.Inject
 class TaskViewModel @Inject constructor(
     private val repository: TaskRepository
 ) : ViewModel() {
-
-    init {
-        viewModelScope.launch {
-            repository.insertTask(
-                Task(
-                    title = "Learn Hilt",
-                    description = "Dependency Injection",
-                    priority = Priority.HIGH,
-                    category = "Android"
-                )
-            )
-        }
-    }
 
     private val _uiState = MutableStateFlow(TaskUiState())
 
