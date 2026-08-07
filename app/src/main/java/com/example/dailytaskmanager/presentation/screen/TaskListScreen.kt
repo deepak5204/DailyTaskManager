@@ -1,6 +1,5 @@
 package com.example.dailytaskmanager.presentation.screen
 
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
@@ -108,7 +107,6 @@ fun TaskListScreen(
             ) {
                 items(tasks) { task ->
                     TaskCardOutlined(task = task, onTaskClick = {}, onToggleCompletion = { task ->
-                        Log.d("TAG", "TaskListScreen $task")
                         viewModel.updateTask(task)
                     })
                 }
