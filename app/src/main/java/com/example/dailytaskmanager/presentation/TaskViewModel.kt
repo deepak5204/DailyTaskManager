@@ -28,6 +28,7 @@ class TaskViewModel @Inject constructor(
         observeTasks()
     }
 
+
     private fun observeTasks() {
         viewModelScope.launch {
             repository.getAllTasks().collectLatest { tasks ->
@@ -50,8 +51,13 @@ class TaskViewModel @Inject constructor(
     }
 
     fun updateTask(task: Task){
+        val updatedTask = task.copy(
+            isCompleted = !task.isCompleted,
+            updatedAt = System.currentTimeMillis()
+        )
+
         viewModelScope.launch {
-            repository.updateTask(task)
+            repository.updateTask(updatedTask)
         }
     }
 
