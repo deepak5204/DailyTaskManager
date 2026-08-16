@@ -114,8 +114,8 @@ fun TaskListScreen(
                 items(tasks) { task ->
                     TaskCard(task = task, onTaskClick = {}, onToggleCompletion = { task ->
                         viewModel.updateTask(task)
-                    }, onDeleteTask = {
-
+                    }, onDeleteTask = { task ->
+                        viewModel.deleteTask(task)
                     })
                 }
             }
