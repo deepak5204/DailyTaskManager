@@ -112,17 +112,11 @@ fun TaskListScreen(
                 ), verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 items(tasks) { task ->
-                    TaskCard(
-                        task = task,
-                        onTaskClick = {
-                        },
-                        onToggleCompletion = { task ->
-                            viewModel.updateTask(task)
-                        },
-                        onDeleteTask = {
+                    TaskCard(task = task, onTaskClick = {}, onToggleCompletion = { task ->
+                        viewModel.updateTask(task)
+                    }, onDeleteTask = {
 
-                        }
-                    )
+                    })
                 }
             }
         }
@@ -161,36 +155,31 @@ fun TaskCard(
             containerColor = MaterialTheme.colorScheme.surface
         ),
         border = BorderStroke(
-            width = 1.dp,
-            color = MaterialTheme.colorScheme.outlineVariant
+            width = 1.dp, color = MaterialTheme.colorScheme.outlineVariant
         )
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp),
-            verticalAlignment = Alignment.Top
+                .padding(16.dp), verticalAlignment = Alignment.Top
         ) {
 
             // Checkbox
             IconButton(
                 onClick = {
                     onToggleCompletion(task)
-                },
-                modifier = Modifier.size(28.dp)
+                }, modifier = Modifier.size(28.dp)
             ) {
                 Icon(
                     imageVector = if (task.isCompleted) {
                         Icons.Default.CheckCircle
                     } else {
                         Icons.Default.RadioButtonUnchecked
-                    },
-                    contentDescription = if (task.isCompleted) {
+                    }, contentDescription = if (task.isCompleted) {
                         "Mark as incomplete"
                     } else {
                         "Mark as complete"
-                    },
-                    tint = if (task.isCompleted) {
+                    }, tint = if (task.isCompleted) {
                         MaterialTheme.colorScheme.primary
                     } else {
                         MaterialTheme.colorScheme.onSurfaceVariant
@@ -208,8 +197,8 @@ fun TaskCard(
                 // Title
                 Text(
                     text = task.title,
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.SemiBold,
+                    style = MaterialTheme.typography.titleLarge,
+                    fontWeight = FontWeight.Bold,
                     textDecoration = if (task.isCompleted) {
                         TextDecoration.LineThrough
                     } else {
@@ -225,45 +214,34 @@ fun TaskCard(
                 )
 
                 // Description
-                task.description
-                    ?.takeIf { it.isNotBlank() }
-                    ?.let {
-                        Spacer(modifier = Modifier.height(4.dp))
+                task.description?.takeIf { it.isNotBlank() }?.let {
+                    Spacer(modifier = Modifier.height(4.dp))
 
-                        Text(
-                            text = it,
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            maxLines = 2,
-                            overflow = TextOverflow.Ellipsis
-                        )
-                    }
+                    Text(
+                        text = it,
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        maxLines = 2,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                }
 
-                Spacer(modifier = Modifier.height(12.dp))
+                Spacer(modifier = Modifier.height(16.dp))
 
                 // Metadata
                 Row(
-                    verticalAlignment = Alignment.CenterVertically
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
                 ) {
 
                     // Category
-                    task.category
-                        ?.takeIf { it.isNotBlank() }
-                        ?.let {
-                            Text(
-                                text = it,
-                                style = MaterialTheme.typography.labelLarge,
-                                color = MaterialTheme.colorScheme.primary,
-                                fontWeight = FontWeight.Medium
-                            )
-                        }
-
-                    // Separator
-                    if (!task.category.isNullOrBlank()) {
+                    task.category?.takeIf { it.isNotBlank() }?.let {
                         Text(
-                            text = "•",
-                            modifier = Modifier.padding(horizontal = 8.dp),
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                            text = it,
+                            style = MaterialTheme.typography.labelLarge,
+                            color = MaterialTheme.colorScheme.primary,
+                            fontWeight = FontWeight.Medium
                         )
                     }
 
@@ -273,12 +251,10 @@ fun TaskCard(
                             MaterialTheme.colorScheme.surfaceVariant
                         } else {
                             priorityBackground
-                        },
-                        shape = RoundedCornerShape(50)
+                        }, shape = RoundedCornerShape(50)
                     ) {
                         Text(
-                            text = task.priority.name
-                                .lowercase()
+                            text = task.priority.name.lowercase()
                                 .replaceFirstChar { it.uppercase() },
                             style = MaterialTheme.typography.labelMedium,
                             color = if (task.isCompleted) {
@@ -288,27 +264,18 @@ fun TaskCard(
                             },
                             fontWeight = FontWeight.SemiBold,
                             modifier = Modifier.padding(
-                                horizontal = 8.dp,
-                                vertical = 4.dp
+                                horizontal = 8.dp, vertical = 4.dp
                             )
                         )
                     }
 
+
                     // Due date
-                    task.dueDate?.let { dueDate ->
-
-                        Text(
-                            text = "•",
-                            modifier = Modifier.padding(horizontal = 8.dp),
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-
-                        Text(
-                            text = formatTaskDate(dueDate),
-                            style = MaterialTheme.typography.labelLarge,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                    }
+                    Text(
+                        text = formatTaskDate(task.createdAt),
+                        style = MaterialTheme.typography.labelLarge,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
                 }
             }
 
@@ -317,36 +284,27 @@ fun TaskCard(
                 IconButton(
                     onClick = {
                         showMenu = true
-                    },
-                    modifier = Modifier.size(32.dp)
+                    }, modifier = Modifier.size(32.dp)
                 ) {
                     Icon(
-                        imageVector = Icons.Default.MoreVert,
-                        contentDescription = "More actions"
+                        imageVector = Icons.Default.MoreVert, contentDescription = "More actions"
                     )
                 }
 
                 DropdownMenu(
-                    expanded = showMenu,
-                    onDismissRequest = {
+                    expanded = showMenu, onDismissRequest = {
                         showMenu = false
-                    }
-                ) {
-                    DropdownMenuItem(
-                        text = {
-                            Text("Delete")
-                        },
-                        leadingIcon = {
-                            Icon(
-                                imageVector = Icons.Default.Delete,
-                                contentDescription = null
-                            )
-                        },
-                        onClick = {
-                            showMenu = false
-                            onDeleteTask(task)
-                        }
-                    )
+                    }) {
+                    DropdownMenuItem(text = {
+                        Text("Delete")
+                    }, leadingIcon = {
+                        Icon(
+                            imageVector = Icons.Default.Delete, contentDescription = null
+                        )
+                    }, onClick = {
+                        showMenu = false
+                        onDeleteTask(task)
+                    })
                 }
             }
         }
@@ -356,13 +314,10 @@ fun TaskCard(
 
 fun formatTaskDate(timestamp: Long): String {
     val formatter = DateTimeFormatter.ofPattern(
-        "MMM d",
-        Locale.getDefault()
+        "MMM d", Locale.getDefault()
     )
 
-    return Instant.ofEpochMilli(timestamp)
-        .atZone(ZoneId.systemDefault())
-        .toLocalDate()
+    return Instant.ofEpochMilli(timestamp).atZone(ZoneId.systemDefault()).toLocalDate()
         .format(formatter)
 }
 
