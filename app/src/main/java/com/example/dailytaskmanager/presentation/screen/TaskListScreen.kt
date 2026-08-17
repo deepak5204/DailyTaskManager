@@ -254,7 +254,7 @@ fun TaskCard(
                             MaterialTheme.colorScheme.surfaceVariant
                         } else {
                             priorityBackground
-                        }, shape = RoundedCornerShape(50)
+                        }, shape = RoundedCornerShape(20)
                     ) {
                         Text(
                             text = task.priority.name.lowercase()
@@ -265,7 +265,7 @@ fun TaskCard(
                             } else {
                                 priorityTextColor
                             },
-                            fontWeight = FontWeight.SemiBold,
+                            fontWeight = FontWeight.Bold,
                             modifier = Modifier.padding(
                                 horizontal = 8.dp, vertical = 4.dp
                             )
