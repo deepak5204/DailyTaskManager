@@ -29,4 +29,8 @@ class TaskRepository @Inject constructor(
     fun getAllTasks(): Flow<List<Task>> {
         return taskDao.getAllTasks()
     }
+
+    fun getTaskById(id: Long): Flow<Task?> {
+        return taskDao.getTaskById(id)
+    }
 }

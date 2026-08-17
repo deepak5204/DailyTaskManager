@@ -24,6 +24,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -33,6 +34,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.dailytaskmanager.data.local.entity.Priority
 import com.example.dailytaskmanager.data.local.entity.Task
 import com.example.dailytaskmanager.presentation.TaskViewModel
@@ -42,9 +44,13 @@ import com.example.dailytaskmanager.presentation.TaskViewModel
 @Composable
 fun AddTaskScreen(
     viewModel: TaskViewModel = hiltViewModel(),
+    taskId: Long? = null,
     onSaveClick: () -> Unit,
     onNavigateBack: () -> Unit,
 ) {
+
+    val isEditMode = taskId != null
+
     var title by remember { mutableStateOf("") }
     var description by remember { mutableStateOf("") }
     var selectedPriority by remember { mutableStateOf(Priority.MEDIUM) }
@@ -52,21 +58,40 @@ fun AddTaskScreen(
 
     val categories = listOf("Study", "Project", "Work", "Personal")
 
+
+    val existingTask by taskId?.let {
+        viewModel.getTaskById(it).collectAsStateWithLifecycle(initialValue = null)
+    } ?: remember {
+        mutableStateOf(null)
+    }
+
+    LaunchedEffect(existingTask) {
+
+        existingTask?.let { task ->
+
+            title = task.title
+            description = task.description.orEmpty()
+            selectedPriority = task.priority
+            selectedCategory = task.category ?: "Study"
+        }
+    }
+
     Scaffold(
         topBar = {
-            TopAppBar(
-                title = { Text("Create New Task", fontWeight = FontWeight.Bold) },
-                navigationIcon = {
-                    IconButton(onClick = onNavigateBack) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Back"
-                        )
-                    }
+            TopAppBar(title = {
+                Text(
+                    text = if (isEditMode) "Edit Task" else "Create New Task",
+                    fontWeight = FontWeight.Bold
+                )
+            }, navigationIcon = {
+                IconButton(onClick = onNavigateBack) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                        contentDescription = "Back"
+                    )
                 }
-            )
-        }
-    ) { paddingValues ->
+            })
+        }) { paddingValues ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -109,7 +134,7 @@ fun AddTaskScreen(
                         fontWeight = FontWeight.SemiBold
                     )
                     Spacer(modifier = Modifier.height(8.dp))
-                    Row (
+                    Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.spacedBy(10.dp)
                     ) {
@@ -153,28 +178,42 @@ fun AddTaskScreen(
                                         )
                                     }
                                 } else null,
-                                shape = RoundedCornerShape(50)
-                            )
+                                shape = RoundedCornerShape(50))
                         }
                     }
                 }
             }
 
             // Save Task Button
-            Button (
+            Button(
                 onClick = {
-                    if (title.isNotBlank()) {
-                        val task = Task(
+                    if (title.isBlank()) return@Button
+
+                    if (isEditMode && existingTask != null) {
+
+                        // UPDATE EXISTING TASK
+
+                        val updatedTask = existingTask!!.copy(
                             title = title,
-                            description = description,
+                            description = description.takeIf { it.isNotBlank() },
                             priority = selectedPriority,
                             category = selectedCategory,
+                            updatedAt = System.currentTimeMillis()
                         )
-                        viewModel.insertTask(task = task)
 
-                        onSaveClick()
+                        viewModel.updateTask(updatedTask)
+
+                    } else {
+                        val newTask = Task(
+                            title = title,
+                            description = description.takeIf { it.isNotBlank() },
+                            priority = selectedPriority,
+                            category = selectedCategory
+                        )
+
+                        viewModel.insertTask(newTask)
                     }
-
+                    onSaveClick()
                 },
                 enabled = title.isNotBlank(),
                 modifier = Modifier
@@ -183,7 +222,7 @@ fun AddTaskScreen(
                 shape = RoundedCornerShape(14.dp)
             ) {
                 Text(
-                    text = "Save Task",
+                    text = if (isEditMode) "Update Task" else "Save Task",
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold
                 )
@@ -197,9 +236,7 @@ fun AddTaskScreen(
 @Composable
 private fun AddTaskScreenPreview() {
     AddTaskScreen(
-        onNavigateBack = {},
-        onSaveClick = {},
-        viewModel = hiltViewModel()
+        onNavigateBack = {}, onSaveClick = {}, viewModel = hiltViewModel()
     )
-    
+
 }

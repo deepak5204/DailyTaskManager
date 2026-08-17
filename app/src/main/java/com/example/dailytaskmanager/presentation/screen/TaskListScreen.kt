@@ -2,7 +2,6 @@ package com.example.dailytaskmanager.presentation.screen
 
 import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -22,6 +21,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.RadioButtonUnchecked
 import androidx.compose.material3.CardDefaults
@@ -67,7 +67,9 @@ import java.util.Locale
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TaskListScreen(
-    viewModel: TaskViewModel = hiltViewModel(), onAddTaskClick: () -> Unit = {}
+    viewModel: TaskViewModel = hiltViewModel(),
+    onAddTaskClick: () -> Unit = {},
+    onEditTaskClick: (Task) -> Unit = {}
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val context = LocalContext.current
@@ -112,10 +114,12 @@ fun TaskListScreen(
                 ), verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 items(tasks) { task ->
-                    TaskCard(task = task, onTaskClick = {}, onToggleCompletion = { task ->
+                    TaskCard(task = task, onToggleCompletion = { task ->
                         viewModel.updateTask(task)
                     }, onDeleteTask = { task ->
                         viewModel.deleteTask(task)
+                    }, onEditTask = {
+                        onEditTaskClick(task)
                     })
                 }
             }
@@ -127,9 +131,9 @@ fun TaskListScreen(
 @Composable
 fun TaskCard(
     task: Task,
-    onTaskClick: (Task) -> Unit,
     onToggleCompletion: (Task) -> Unit,
-    onDeleteTask: (Task) -> Unit
+    onDeleteTask: (Task) -> Unit,
+    onEditTask: (Task) -> Unit,
 ) {
     var showMenu by remember { mutableStateOf(false) }
 
@@ -148,8 +152,7 @@ fun TaskCard(
     OutlinedCard(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 6.dp)
-            .clickable { onTaskClick(task) },
+            .padding(horizontal = 16.dp, vertical = 6.dp),
         shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.outlinedCardColors(
             containerColor = MaterialTheme.colorScheme.surface
@@ -295,6 +298,19 @@ fun TaskCard(
                     expanded = showMenu, onDismissRequest = {
                         showMenu = false
                     }) {
+
+                    DropdownMenuItem(text = {
+                        Text("Edit")
+                    }, leadingIcon = {
+                        Icon(
+                            imageVector = Icons.Default.Edit, contentDescription = null
+                        )
+                    }, onClick = {
+                        showMenu = false
+                        onEditTask(task)
+                    })
+
+                    // delete
                     DropdownMenuItem(text = {
                         Text("Delete")
                     }, leadingIcon = {

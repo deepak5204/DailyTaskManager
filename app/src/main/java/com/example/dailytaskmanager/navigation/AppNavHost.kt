@@ -13,30 +13,41 @@ import com.example.dailytaskmanager.presentation.screen.TaskListScreen
 @Composable
 fun AppNavHost(modifier: Modifier = Modifier) {
     val navController = rememberNavController()
-    val viewModel:  TaskViewModel = hiltViewModel()
+    val viewModel: TaskViewModel = hiltViewModel()
 
-    NavHost(navController = navController, startDestination = Screen.TaskListScreen.route){
+    NavHost(navController = navController, startDestination = Screen.TaskListScreen.route) {
 
         // Home
-        composable(Screen.TaskListScreen.route){
-            TaskListScreen(
-                onAddTaskClick = {
-                    navController.navigate(Screen.AddTaskListScreen.route)
-                }
+        composable(Screen.TaskListScreen.route) {
+            TaskListScreen(onAddTaskClick = {
+                navController.navigate(Screen.AddTaskListScreen.route)
+            }, onEditTaskClick = { task ->
+                navController.navigate(
+                    Screen.EditTaskScreen.createRoute(task.id)
+                )
+            })
+        }
+
+        composable(Screen.AddTaskListScreen.route) {
+            AddTaskScreen(viewModel = viewModel, onNavigateBack = {
+                navController.popBackStack()
+            }, onSaveClick = {
+                navController.popBackStack()
+            }
+
             )
         }
 
-        composable(Screen.AddTaskListScreen.route){
-            AddTaskScreen(
-                viewModel = viewModel,
-                onNavigateBack = {
-                    navController.popBackStack()
-                },
-                onSaveClick = {
-                    navController.popBackStack()
-                }
+        composable(route = Screen.EditTaskScreen.route) { backStackEntry ->
+            val taskId = backStackEntry.arguments?.getString("taskId")?.toLongOrNull()
 
-            )
+            AddTaskScreen(viewModel = viewModel, taskId = taskId, onNavigateBack = {
+                navController.popBackStack()
+            }, onSaveClick = {
+                navController.popBackStack()
+            })
         }
+
+
     }
 }
