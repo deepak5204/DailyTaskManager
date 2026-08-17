@@ -35,9 +35,7 @@ class TaskViewModel @Inject constructor(
             repository.getAllTasks().collectLatest { tasks ->
 
                 _uiState.value = _uiState.value.copy(
-                    tasks = tasks,
-                    isLoading = false,
-                    error = null
+                    tasks = tasks, isLoading = false, error = null
                 )
             }
         }
@@ -47,18 +45,17 @@ class TaskViewModel @Inject constructor(
     fun getTaskById(id: Long): Flow<Task?> {
         return repository.getTaskById(id)
     }
-    
 
-    fun insertTask(task: Task){
+
+    fun insertTask(task: Task) {
         viewModelScope.launch {
             repository.insertTask(task);
         }
     }
 
-    fun updateTask(task: Task){
+    fun updateTaskStatus(task: Task) {
         val updatedTask = task.copy(
-            isCompleted = !task.isCompleted,
-            updatedAt = System.currentTimeMillis()
+            isCompleted = !task.isCompleted, updatedAt = System.currentTimeMillis()
         )
 
         viewModelScope.launch {
@@ -66,13 +63,27 @@ class TaskViewModel @Inject constructor(
         }
     }
 
-    fun deleteTask(task: Task){
+    fun editTAsk(task: Task) {
+        val editedTask = task.copy(
+            title = task.title,
+            description = task.description,
+            category = task.category,
+            priority = task.priority,
+            updatedAt = System.currentTimeMillis()
+        )
+
+        viewModelScope.launch {
+            repository.updateTask(editedTask)
+        }
+    }
+
+    fun deleteTask(task: Task) {
         viewModelScope.launch {
             repository.deleteTask(task);
         }
     }
 
-    fun deleteAllTask(){
+    fun deleteAllTask() {
         viewModelScope.launch {
             repository.deleteAllTasks()
         }

@@ -201,7 +201,7 @@ fun AddTaskScreen(
                             updatedAt = System.currentTimeMillis()
                         )
 
-                        viewModel.updateTask(updatedTask)
+                        viewModel.editTAsk(updatedTask)
 
                     } else {
                         val newTask = Task(
