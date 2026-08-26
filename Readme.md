@@ -201,8 +201,14 @@ This project is being developed to gain hands-on experience with:
 
 ## Screenshots
 
-> Screenshots will be added as development progresses.
+### TAsk List Screen
 
+![Task_List_Screen](screenshots/tasklist_screen.png)
+
+
+### Create New Task
+
+![Create New Task](screenshots/create_new_task_screen.png)
 ---
 
 ## License
