@@ -9,7 +9,8 @@ import java.util.concurrent.TimeUnit
 
 class WorkManagerScheduler {
 
-    fun scheduleTaskCleanup(context: Context) = {
+    fun scheduleTaskCleanup(context: Context)  {
+
         val cleanupRequest = PeriodicWorkRequestBuilder<TaskCleanupWorker>(
             1,
             TimeUnit.DAYS,
