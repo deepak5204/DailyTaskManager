@@ -38,4 +38,8 @@ interface TaskDao {
 
     @Query("SELECT * FROM Task WHERE id = :id")
     fun getTaskById(id: Long): Flow<Task?>
+
+
+    @Query("DELETE FROM Task WHERE createdAt < :cutoffTime AND isCompleted = 1")
+    suspend fun deleteTasksOlderThan(cutoffTime: Long) : Int
 }

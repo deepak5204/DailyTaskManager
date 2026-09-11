@@ -13,6 +13,7 @@ espressoCore = "3.7.0"
 
 hilt = "2.57.1"
 ksp = "2.0.21-1.0.28"
+hilt-work = "1.2.0"
 
 room-version = "2.7.2"
 
@@ -21,6 +22,8 @@ lifecycle-viewModel = "2.8.7"
 hilt-navigation-compose = "1.2.0"
 
 navigation-compose = "2.8.8"
+workRuntimeKtx = "2.11.2"
+
 
 
 [libraries]
@@ -58,6 +61,14 @@ hilt-navigation-compose = { group = "androidx.hilt", name = "hilt-navigation-com
 # compose navigation
 navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigation-compose"}
 
+
+#workmanager
+androidx-work-runtime-ktx = { module = "androidx.work:work-runtime-ktx", version.ref = "workRuntimeKtx" }
+
+# Hilt + WorkManager
+androidx-hilt-work = { group = "androidx.hilt", name = "hilt-work", version.ref = "hilt-work" }
+
+androidx-hilt-compiler = { group = "androidx.hilt", name = "hilt-compiler", version.ref = "hilt-work" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

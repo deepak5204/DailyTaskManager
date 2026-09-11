@@ -33,4 +33,8 @@ class TaskRepository @Inject constructor(
     fun getTaskById(id: Long): Flow<Task?> {
         return taskDao.getTaskById(id)
     }
+
+    suspend fun deleteTasksOlderThan(cutoffTime: Long): Int {
+        return taskDao.deleteTasksOlderThan(cutoffTime)
+    }
 }
