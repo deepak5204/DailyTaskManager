@@ -12,7 +12,7 @@ class WorkManagerScheduler {
     fun scheduleTaskCleanup(context: Context)  {
 
         val cleanupRequest = PeriodicWorkRequestBuilder<TaskCleanupWorker>(
-            30,
+            1,
             TimeUnit.DAYS,
         ).build()
 

@@ -23,7 +23,7 @@ class TaskCleanupWorker @AssistedInject constructor(
         Log.d("TaskCleanupWorker", "Worker started")
 
         val thirtyDaysAgo = System.currentTimeMillis() -
-                TimeUnit.DAYS.toMillis(80)
+                TimeUnit.DAYS.toMillis(30)
 
         val deletedCount =
             taskRepository.deleteTasksOlderThan(thirtyDaysAgo)
