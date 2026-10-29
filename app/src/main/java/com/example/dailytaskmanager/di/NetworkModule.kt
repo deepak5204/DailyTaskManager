@@ -1,5 +1,6 @@
 package com.example.dailytaskmanager.di
 
+import com.example.dailytaskmanager.data.remote.auth.AuthApi
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import dagger.Module
@@ -14,7 +15,7 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object NetworkModule {
-    private const val BASE_URL = "https://daily-task-manager-backend-1.onrender.com"
+    private const val BASE_URL = "https://daily-task-manager-backend-1.onrender.com/"
 
 
     @Provides
@@ -30,5 +31,11 @@ object NetworkModule {
                 GsonConverterFactory.create(gson)
             )
             .build()
+    }
+
+    @Provides
+    @Singleton
+    fun provideAuthApi(retrofit: Retrofit): AuthApi {
+        return retrofit.create(AuthApi::class.java)
     }
 }
