@@ -14,7 +14,7 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object NetworkModule {
-    private val BASE_URL = "https://daily-task-manager-backend-1.onrender.com"
+    private const val BASE_URL = "https://daily-task-manager-backend-1.onrender.com"
 
 
     @Provides
