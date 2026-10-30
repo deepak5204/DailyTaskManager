@@ -8,6 +8,8 @@ import com.example.dailytaskmanager.data.remote.auth.RegisterRequest
 import com.example.dailytaskmanager.data.remote.auth.RegisterResponse
 import jakarta.inject.Inject
 import jakarta.inject.Singleton
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 
 
 @Singleton
@@ -51,6 +53,12 @@ class AuthRepository @Inject constructor(
                 response.errorBody()?.string()
                     ?: "Registration failed. Please try again."
             )
+        }
+    }
+
+    fun observeAuthState(): Flow<Boolean> {
+        return tokenDataStore.getToken().map { token ->
+            !token.isNullOrBlank()
         }
     }
 }
