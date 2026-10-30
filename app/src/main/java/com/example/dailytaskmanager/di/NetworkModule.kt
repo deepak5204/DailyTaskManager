@@ -3,6 +3,7 @@ package com.example.dailytaskmanager.di
 import android.content.Context
 import com.example.dailytaskmanager.data.local.TokenDataStore
 import com.example.dailytaskmanager.data.remote.auth.AuthApi
+import com.example.dailytaskmanager.data.remote.interceptor.ApiLoggingInterceptor
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import dagger.Module
@@ -10,6 +11,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
@@ -29,11 +31,20 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideRetrofit(gson: Gson): Retrofit{
+    fun provideOkHttpClient(): OkHttpClient {
+        return OkHttpClient.Builder()
+            .addInterceptor(ApiLoggingInterceptor.create())
+            .build()
+    }
+
+    @Provides
+    @Singleton
+    fun provideRetrofit( okHttpClient: OkHttpClient): Retrofit{
         return Retrofit.Builder()
             .baseUrl(BASE_URL)
+            .client(okHttpClient)
             .addConverterFactory(
-                GsonConverterFactory.create(gson)
+                GsonConverterFactory.create()
             )
             .build()
     }

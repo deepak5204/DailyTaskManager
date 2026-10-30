@@ -47,6 +47,7 @@ android {
 
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 }
 
@@ -110,4 +111,8 @@ dependencies {
     // datastore-preferences for token storage
     implementation(libs.androidx.datastore.preferences)
 
+    implementation(libs.logging.interceptor)
+
+    implementation(libs.okhttp)
+    implementation(libs.okhttp.logging)
 }
