@@ -1,5 +1,6 @@
 package com.example.dailytaskmanager.data.repository
 
+import com.example.dailytaskmanager.data.local.TokenDataStore
 import com.example.dailytaskmanager.data.remote.auth.AuthApi
 import com.example.dailytaskmanager.data.remote.auth.LoginRequest
 import com.example.dailytaskmanager.data.remote.auth.LoginResponse
@@ -11,7 +12,8 @@ import jakarta.inject.Singleton
 
 @Singleton
 class AuthRepository @Inject constructor(
-    private val authApi: AuthApi
+    private val authApi: AuthApi,
+    private val tokenDataStore: TokenDataStore
 ) {
 
     suspend fun login(
@@ -20,8 +22,14 @@ class AuthRepository @Inject constructor(
         val response = authApi.login(request)
 
         if (response.isSuccessful) {
-            return response.body()
+            val loginResponse = response.body()
                 ?: throw Exception("Login response body is empty")
+
+            // Save JWT after successful login
+            tokenDataStore.saveToken(loginResponse.token)
+
+            return loginResponse
+
         } else {
             throw Exception(
                 response.errorBody()?.string()

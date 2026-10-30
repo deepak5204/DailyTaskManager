@@ -1,11 +1,14 @@
 package com.example.dailytaskmanager.di
 
+import android.content.Context
+import com.example.dailytaskmanager.data.local.TokenDataStore
 import com.example.dailytaskmanager.data.remote.auth.AuthApi
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -24,6 +27,8 @@ object NetworkModule {
         return GsonBuilder().create()
     }
 
+    @Provides
+    @Singleton
     fun provideRetrofit(gson: Gson): Retrofit{
         return Retrofit.Builder()
             .baseUrl(BASE_URL)
@@ -31,6 +36,15 @@ object NetworkModule {
                 GsonConverterFactory.create(gson)
             )
             .build()
+    }
+
+
+    @Provides
+    @Singleton
+    fun provideTokenDataStore(
+        @ApplicationContext context: Context
+    ): TokenDataStore {
+        return TokenDataStore(context)
     }
 
     @Provides
