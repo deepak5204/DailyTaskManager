@@ -8,6 +8,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.dailytaskmanager.presentation.TaskViewModel
 import com.example.dailytaskmanager.presentation.screen.AddTaskScreen
+import com.example.dailytaskmanager.presentation.screen.LoginScreen
+import com.example.dailytaskmanager.presentation.screen.RegisterScreen
 import com.example.dailytaskmanager.presentation.screen.TaskListScreen
 
 @Composable
@@ -15,7 +17,7 @@ fun AppNavHost(modifier: Modifier = Modifier) {
     val navController = rememberNavController()
     val viewModel: TaskViewModel = hiltViewModel()
 
-    NavHost(navController = navController, startDestination = Screen.TaskListScreen.route) {
+    NavHost(navController = navController, startDestination = Screen.LoginScreen.route) {
 
         // Home
         composable(Screen.TaskListScreen.route) {
@@ -46,6 +48,35 @@ fun AppNavHost(modifier: Modifier = Modifier) {
             }, onSaveClick = {
                 navController.popBackStack()
             })
+        }
+
+
+        composable(Screen.LoginScreen.route) {
+            LoginScreen(
+                onLoginSuccess = {
+                    navController.navigate(Screen.TaskListScreen.route) {
+                        popUpTo(Screen.LoginScreen.route) {
+                            inclusive = true
+                        }
+                        launchSingleTop = true
+                    }
+                },
+                onRegisterClick = {
+                    navController.navigate(Screen.RegisterScreen.route)
+                }
+            )
+        }
+
+
+        composable(Screen.RegisterScreen.route) {
+            RegisterScreen(
+                onRegisterSuccess = {
+                    navController.popBackStack()
+                },
+                onLoginClick = {
+                    navController.popBackStack()
+                }
+            )
         }
 
 

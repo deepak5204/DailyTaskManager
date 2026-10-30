@@ -10,4 +10,7 @@ sealed class Screen(val route: String) {
             return "edit_task_screen/$taskId"
         }
     }
+
+    object LoginScreen : Screen("login")
+    object RegisterScreen : Screen("register")
 }
