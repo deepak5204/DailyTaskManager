@@ -3,7 +3,6 @@ package com.example.dailytaskmanager.data.local.dao
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
-import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
 import com.example.dailytaskmanager.data.local.entity.Task
@@ -12,9 +11,8 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 
 interface TaskDao {
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertTask(task: Task)
-
+    @Insert
+    suspend fun insertTask(task: Task): Long
     @Update
     suspend fun updateTask(task: Task)
 
@@ -42,4 +40,15 @@ interface TaskDao {
 
     @Query("DELETE FROM Task WHERE createdAt < :cutoffTime AND isCompleted = 1")
     suspend fun deleteTasksOlderThan(cutoffTime: Long) : Int
+
+    @Query("""
+    UPDATE Task
+    SET serverId = :serverId,
+        syncStatus = 'SYNCED'
+    WHERE id = :localId
+""")
+    suspend fun markTaskAsSynced(
+        localId: Long,
+        serverId: String
+    )
 }

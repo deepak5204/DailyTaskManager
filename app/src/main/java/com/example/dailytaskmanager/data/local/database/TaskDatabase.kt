@@ -11,7 +11,7 @@ import com.example.dailytaskmanager.data.local.entity.Task
 //Instead of writing SQL manually, Room generates everything.
 @Database(
     entities = [Task::class],
-    version = 1,
+    version = 2,
     exportSchema = false
 )
 

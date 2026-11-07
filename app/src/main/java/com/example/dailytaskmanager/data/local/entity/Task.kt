@@ -1,5 +1,6 @@
 package com.example.dailytaskmanager.data.local.entity
 
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
@@ -14,5 +15,14 @@ data class Task(
     val dueDate: Long? = null,
     val isCompleted: Boolean = false,
     val createdAt: Long = System.currentTimeMillis(),
-    val updatedAt: Long = System.currentTimeMillis()
+    val updatedAt: Long = System.currentTimeMillis(),
+    val serverId: String? = null,
+    @ColumnInfo(defaultValue = "'PENDING'")
+    val syncStatus: SyncStatus = SyncStatus.PENDING,
 )
+
+enum class SyncStatus {
+    PENDING,
+    SYNCED,
+    FAILED
+}

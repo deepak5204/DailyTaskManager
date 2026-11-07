@@ -2,6 +2,7 @@ package com.example.dailytaskmanager.di
 
 import android.content.Context
 import com.example.dailytaskmanager.data.local.TokenDataStore
+import com.example.dailytaskmanager.data.remote.api.TaskApi
 import com.example.dailytaskmanager.data.remote.auth.AuthApi
 import com.example.dailytaskmanager.data.remote.interceptor.ApiLoggingInterceptor
 import com.google.gson.Gson
@@ -62,5 +63,11 @@ object NetworkModule {
     @Singleton
     fun provideAuthApi(retrofit: Retrofit): AuthApi {
         return retrofit.create(AuthApi::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideTaskApi(retrofit: Retrofit): TaskApi {
+        return retrofit.create(TaskApi::class.java)
     }
 }

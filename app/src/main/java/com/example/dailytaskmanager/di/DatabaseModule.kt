@@ -5,6 +5,7 @@ import android.content.Context
 import androidx.room.Room
 
 import com.example.dailytaskmanager.data.local.dao.TaskDao
+import com.example.dailytaskmanager.data.local.database.MIGRATION_1_2
 import com.example.dailytaskmanager.data.local.database.TaskDatabase
 
 import dagger.Module
@@ -27,17 +28,15 @@ object DatabaseModule {
     ): TaskDatabase {
 
         val db = Room.databaseBuilder(
-            context = context,
-            klass = TaskDatabase::class.java,
-            name = "database-name"
-        ).build()
+            context = context, klass = TaskDatabase::class.java, name = "database-name"
+        ).addMigrations(MIGRATION_1_2).build()
         return db
     }
 
     @Provides
     fun provideTaskDao(
         database: TaskDatabase
-    ) : TaskDao {
+    ): TaskDao {
         return database.taskDao()
     }
 }
