@@ -82,4 +82,31 @@ class TaskRepository @Inject constructor(
             }
         )
     }
+
+    suspend fun syncPendingTasks() {
+        val pendingTasks = taskDao.getPendingTasks()
+
+        for (task in pendingTasks) {
+            try {
+                val response = taskApi.createTask(
+                    task.toCreateTaskRequest()
+                )
+
+                if (response.success) {
+                    taskDao.markTaskAsSynced(
+                        localId = task.id,
+                        serverId = response.task.id
+                    )
+                }
+
+            } catch (e: IOException) {
+                // Network failure. Stop processing further tasks.
+                break
+
+            } catch (e: HttpException) {
+                // HTTP failure. Stop processing further tasks.
+                break
+            }
+        }
+    }
 }

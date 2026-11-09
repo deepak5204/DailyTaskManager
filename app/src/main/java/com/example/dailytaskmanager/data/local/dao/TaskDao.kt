@@ -51,4 +51,8 @@ interface TaskDao {
         localId: Long,
         serverId: String
     )
+
+
+    @Query("SELECT * FROM Task WHERE syncStatus = 'PENDING'")
+    suspend fun getPendingTasks(): List<Task>
 }
