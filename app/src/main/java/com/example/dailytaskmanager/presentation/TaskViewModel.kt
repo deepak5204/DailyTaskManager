@@ -29,6 +29,12 @@ class TaskViewModel @Inject constructor(
         observeTasks()
     }
 
+    fun syncTasksFromServer() {
+        viewModelScope.launch {
+            repository.syncTasksFromServer()
+        }
+    }
+
 
     private fun observeTasks() {
         viewModelScope.launch {

@@ -52,7 +52,40 @@ interface TaskDao {
         serverId: String
     )
 
-
     @Query("SELECT * FROM Task WHERE syncStatus = 'PENDING'")
     suspend fun getPendingTasks(): List<Task>
+
+
+    @Query("SELECT * FROM Task WHERE serverId = :serverId LIMIT 1")
+    suspend fun getTaskByServerId(serverId: String): Task?
+
+
+    // update an existing task using its server ID.
+    @Query("""
+    UPDATE Task
+    SET title = :title,
+        description = :description,
+        priority = :priority,
+        category = :category,
+        dueDate = :dueDate,
+        isCompleted = :isCompleted,
+        createdAt = :createdAt,
+        updatedAt = :updatedAt,
+        syncStatus = 'SYNCED'
+    WHERE serverId = :serverId AND syncStatus = 'SYNCED'
+""")
+    suspend fun updateTaskFromServer(
+        serverId: String,
+        title: String,
+        description: String?,
+        priority: String,
+        category: String?,
+        dueDate: Long?,
+        isCompleted: Boolean,
+        createdAt: Long,
+        updatedAt: Long
+    )
+
+
+
 }

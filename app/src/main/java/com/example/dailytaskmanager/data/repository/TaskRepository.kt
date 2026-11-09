@@ -1,9 +1,12 @@
 package com.example.dailytaskmanager.data.repository
 
 import com.example.dailytaskmanager.data.local.dao.TaskDao
+import com.example.dailytaskmanager.data.local.entity.SyncStatus
 import com.example.dailytaskmanager.data.local.entity.Task
+import com.example.dailytaskmanager.data.mapper.toTask
 import com.example.dailytaskmanager.data.remote.api.TaskApi
 import com.example.dailytaskmanager.data.remote.dto.CreateTaskRequest
+import com.example.dailytaskmanager.data.remote.dto.TaskResponseDto
 import kotlinx.coroutines.flow.Flow
 import retrofit2.HttpException
 import java.io.IOException
@@ -13,8 +16,7 @@ import javax.inject.Singleton
 
 @Singleton
 class TaskRepository @Inject constructor(
-    private val taskDao: TaskDao,
-    private val taskApi: TaskApi
+    private val taskDao: TaskDao, private val taskApi: TaskApi
 ) {
     suspend fun insertTask(task: Task): Long {
 
@@ -30,8 +32,7 @@ class TaskRepository @Inject constructor(
             // Step 3: Update local record after success
             if (response.success) {
                 taskDao.markTaskAsSynced(
-                    localId = localId,
-                    serverId = response.task.id
+                    localId = localId, serverId = response.task.id
                 )
             }
 
@@ -79,34 +80,80 @@ class TaskRepository @Inject constructor(
             category = category,
             dueDate = dueDate?.let {
                 Instant.ofEpochMilli(it).toString()
-            }
-        )
+            })
     }
 
     suspend fun syncPendingTasks() {
         val pendingTasks = taskDao.getPendingTasks()
 
         for (task in pendingTasks) {
-            try {
                 val response = taskApi.createTask(
                     task.toCreateTaskRequest()
                 )
 
                 if (response.success) {
                     taskDao.markTaskAsSynced(
-                        localId = task.id,
-                        serverId = response.task.id
+                        localId = task.id, serverId = response.task.id
                     )
                 }
+        }
+    }
 
-            } catch (e: IOException) {
-                // Network failure. Stop processing further tasks.
-                break
 
-            } catch (e: HttpException) {
-                // HTTP failure. Stop processing further tasks.
-                break
+    suspend fun fetchTasksFromServer() = taskApi.getTasks()
+
+
+    private suspend fun syncTaskFromServer(
+        remoteTask: TaskResponseDto
+    ) {
+        // Step 1: Find the task using its backend ID
+        val localTask = taskDao.getTaskByServerId(remoteTask.id)
+
+        // Step 2: Decide what to do
+        when {
+            // Task doesn't exist locally
+            localTask == null -> {
+                taskDao.insertTask(remoteTask.toTask())
+            }
+
+            // Preserve locally pending changes
+            localTask.syncStatus == SyncStatus.PENDING -> {
+                // Do nothing
+            }
+
+            localTask.syncStatus == SyncStatus.FAILED -> {
+                // Do nothing
+            }
+
+
+            // Update an already synchronized task
+            localTask.syncStatus == SyncStatus.SYNCED -> {
+                val task = remoteTask.toTask()
+
+                taskDao.updateTaskFromServer(
+                    serverId = remoteTask.id,
+                    title = task.title,
+                    description = task.description,
+                    priority = task.priority.name,
+                    category = task.category,
+                    dueDate = task.dueDate,
+                    isCompleted = task.isCompleted,
+                    createdAt = task.createdAt,
+                    updatedAt = task.updatedAt
+                )
             }
         }
     }
+
+
+    suspend fun syncTasksFromServer() {
+        val response = fetchTasksFromServer()
+
+        if (response.success) {
+            for (remoteTask in response.tasks) {
+                syncTaskFromServer(remoteTask)
+            }
+        }
+    }
+
 }
