@@ -53,7 +53,13 @@ class TaskRepository @Inject constructor(
     }
 
     suspend fun deleteTask(task: Task) {
-        taskDao.deleteTask(task)
+        if (task.serverId == null) {
+            // Task exists only locally.
+            taskDao.deleteTask(task)
+        } else {
+            // Task exists on the backend.
+            taskDao.markTaskForDeletion(task.id)
+        }
     }
 
     suspend fun deleteAllTasks() {
@@ -125,6 +131,11 @@ class TaskRepository @Inject constructor(
                 // Do nothing
             }
 
+            localTask.syncStatus == SyncStatus.DELETE_PENDING -> {
+                // Preserve pending deletion.
+                // Do not reinsert or update this task from the server.
+            }
+
 
             // Update an already synchronized task
             localTask.syncStatus == SyncStatus.SYNCED -> {
@@ -152,6 +163,21 @@ class TaskRepository @Inject constructor(
         if (response.success) {
             for (remoteTask in response.tasks) {
                 syncTaskFromServer(remoteTask)
+            }
+        }
+    }
+
+
+    suspend fun syncPendingDeletions() {
+        val pendingDeletions = taskDao.getTasksPendingDeletion()
+
+        for (task in pendingDeletions) {
+            val serverId = task.serverId ?: continue
+
+            val response = taskApi.deleteTask(serverId)
+
+            if (response.success) {
+                taskDao.permanentlyDeleteTask(task.id)
             }
         }
     }

@@ -24,5 +24,6 @@ data class Task(
 enum class SyncStatus {
     PENDING,
     SYNCED,
-    FAILED
+    FAILED,
+    DELETE_PENDING
 }

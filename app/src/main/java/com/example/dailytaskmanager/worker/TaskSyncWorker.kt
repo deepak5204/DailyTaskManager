@@ -20,6 +20,7 @@ class TaskSyncWorker @AssistedInject constructor(
             Log.d("TaskSyncWorker", "Sync worker started")
 
             taskRepository.syncPendingTasks()
+            taskRepository.syncPendingDeletions()
             taskRepository.syncTasksFromServer()
 
             Log.d("TaskSyncWorker", "Sync worker completed")
