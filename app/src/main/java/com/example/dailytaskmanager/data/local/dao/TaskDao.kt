@@ -99,7 +99,8 @@ interface TaskDao {
     suspend fun getTasksPendingDeletion(): List<Task>
 
 
-    @Query("""
+    @Query(
+        """
     UPDATE Task
     SET syncStatus = 'DELETE_PENDING'
     WHERE id = :localId

@@ -1,9 +1,9 @@
 package com.example.dailytaskmanager.data.mapper
 
+import com.example.dailytaskmanager.data.local.entity.Priority
 import com.example.dailytaskmanager.data.local.entity.SyncStatus
 import com.example.dailytaskmanager.data.local.entity.Task
 import com.example.dailytaskmanager.data.remote.dto.TaskResponseDto
-import com.example.dailytaskmanager.data.local.entity.Priority
 import java.time.Instant
 
 fun TaskResponseDto.toTask(): Task {

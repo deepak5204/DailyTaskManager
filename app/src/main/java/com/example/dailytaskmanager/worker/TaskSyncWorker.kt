@@ -14,7 +14,7 @@ class TaskSyncWorker @AssistedInject constructor(
     @Assisted appContext: Context,
     @Assisted workerParams: WorkerParameters,
     private val taskRepository: TaskRepository
-) : CoroutineWorker(appContext, workerParams){
+) : CoroutineWorker(appContext, workerParams) {
     override suspend fun doWork(): Result {
         return try {
             Log.d("TaskSyncWorker", "Sync worker started")

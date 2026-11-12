@@ -93,15 +93,15 @@ class TaskRepository @Inject constructor(
         val pendingTasks = taskDao.getPendingTasks()
 
         for (task in pendingTasks) {
-                val response = taskApi.createTask(
-                    task.toCreateTaskRequest()
-                )
+            val response = taskApi.createTask(
+                task.toCreateTaskRequest()
+            )
 
-                if (response.success) {
-                    taskDao.markTaskAsSynced(
-                        localId = task.id, serverId = response.task.id
-                    )
-                }
+            if (response.success) {
+                taskDao.markTaskAsSynced(
+                    localId = task.id, serverId = response.task.id
+                )
+            }
         }
     }
 

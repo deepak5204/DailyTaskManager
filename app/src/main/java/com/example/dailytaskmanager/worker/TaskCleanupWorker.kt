@@ -15,18 +15,16 @@ class TaskCleanupWorker @AssistedInject constructor(
     @Assisted appContext: Context,
     @Assisted workerParams: WorkerParameters,
     private val taskRepository: TaskRepository
-): CoroutineWorker(appContext, workerParams) {
+) : CoroutineWorker(appContext, workerParams) {
 
 
     override suspend fun doWork(): Result {
 
         Log.d("TaskCleanupWorker", "Worker started")
 
-        val thirtyDaysAgo = System.currentTimeMillis() -
-                TimeUnit.DAYS.toMillis(30)
+        val thirtyDaysAgo = System.currentTimeMillis() - TimeUnit.DAYS.toMillis(30)
 
-        val deletedCount =
-            taskRepository.deleteTasksOlderThan(thirtyDaysAgo)
+        val deletedCount = taskRepository.deleteTasksOlderThan(thirtyDaysAgo)
 
         Log.d("TaskCleanupWorker", "Deleted count: $deletedCount")
 
