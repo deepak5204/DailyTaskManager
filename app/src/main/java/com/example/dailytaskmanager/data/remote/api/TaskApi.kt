@@ -4,10 +4,13 @@ import com.example.dailytaskmanager.data.remote.dto.CreateTaskRequest
 import com.example.dailytaskmanager.data.remote.dto.CreateTaskResponse
 import com.example.dailytaskmanager.data.remote.dto.DeleteTaskResponse
 import com.example.dailytaskmanager.data.remote.dto.GetTasksResponse
+import com.example.dailytaskmanager.data.remote.dto.UpdateTaskRequest
+import com.example.dailytaskmanager.data.remote.dto.UpdateTaskResponse
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.POST
+import retrofit2.http.PUT
 import retrofit2.http.Path
 
 interface TaskApi {
@@ -24,4 +27,10 @@ interface TaskApi {
     suspend fun deleteTask(
         @Path("taskId") taskId: String
     ): DeleteTaskResponse
+
+    @PUT("api/tasks/{taskId}")
+    suspend fun updateTask(
+        @Path("taskId") taskId: String,
+        @Body request: UpdateTaskRequest
+    ): UpdateTaskResponse
 }
