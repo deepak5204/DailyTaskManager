@@ -7,6 +7,7 @@ import com.example.dailytaskmanager.data.mapper.toTask
 import com.example.dailytaskmanager.data.remote.api.TaskApi
 import com.example.dailytaskmanager.data.remote.dto.CreateTaskRequest
 import com.example.dailytaskmanager.data.remote.dto.TaskResponseDto
+import com.example.dailytaskmanager.data.remote.dto.UpdateTaskRequest
 import kotlinx.coroutines.flow.Flow
 import retrofit2.HttpException
 import java.io.IOException
@@ -49,7 +50,39 @@ class TaskRepository @Inject constructor(
     }
 
     suspend fun updateTask(task: Task) {
-        taskDao.updateTask(task)
+        val existingTask = taskDao.getTaskByIdOnce(task.id)
+            ?: return
+
+        val newSyncStatus = when (existingTask.syncStatus) {
+            SyncStatus.PENDING -> SyncStatus.PENDING
+
+            SyncStatus.SYNCED -> SyncStatus.PENDING_UPDATE
+
+            SyncStatus.PENDING_UPDATE -> SyncStatus.PENDING_UPDATE
+
+            SyncStatus.FAILED -> {
+                if (existingTask.serverId == null) {
+                    SyncStatus.PENDING
+                } else {
+                    SyncStatus.PENDING_UPDATE
+                }
+            }
+
+            SyncStatus.DELETE_PENDING -> return
+        }
+
+        val updatedTask = existingTask.copy(
+            title = task.title,
+            description = task.description,
+            priority = task.priority,
+            category = task.category,
+            dueDate = task.dueDate,
+            isCompleted = task.isCompleted,
+            updatedAt = System.currentTimeMillis(),
+            syncStatus = newSyncStatus
+        )
+
+        taskDao.updateTask(updatedTask)
     }
 
     suspend fun deleteTask(task: Task) {
@@ -89,6 +122,19 @@ class TaskRepository @Inject constructor(
             })
     }
 
+    private fun Task.toUpdateTaskRequest(): UpdateTaskRequest {
+        return UpdateTaskRequest(
+            title = title,
+            description = description,
+            priority = priority.name,
+            category = category,
+            dueDate = dueDate?.let {
+                Instant.ofEpochMilli(it).toString()
+            },
+            isCompleted = isCompleted
+        )
+    }
+
     suspend fun syncPendingTasks() {
         val pendingTasks = taskDao.getPendingTasks()
 
@@ -101,6 +147,36 @@ class TaskRepository @Inject constructor(
                 taskDao.markTaskAsSynced(
                     localId = task.id, serverId = response.task.id
                 )
+            }
+        }
+    }
+
+    suspend fun syncPendingUpdates() {
+        val pendingUpdates = taskDao.getTasksPendingUpdate()
+
+        for (task in pendingUpdates) {
+            val serverId = task.serverId ?: continue
+
+            try {
+                val response = taskApi.updateTask(
+                    taskId = serverId,
+                    request = task.toUpdateTaskRequest()
+                )
+
+                if (response.success) {
+                    taskDao.markTaskUpdateAsSynced(
+                        localId = task.id,
+                        updatedAt = task.updatedAt
+                    )
+                }
+
+            } catch (e: IOException) {
+                // Network unavailable.
+                // Keep the task in PENDING_UPDATE.
+
+            } catch (e: HttpException) {
+                // Backend returned an HTTP error.
+                // Keep the task in PENDING_UPDATE.
             }
         }
     }
@@ -129,6 +205,11 @@ class TaskRepository @Inject constructor(
 
             localTask.syncStatus == SyncStatus.FAILED -> {
                 // Do nothing
+            }
+
+            localTask.syncStatus == SyncStatus.PENDING_UPDATE -> {
+                // Preserve locally updated data.
+                // Backend data must not overwrite pending local changes.
             }
 
             localTask.syncStatus == SyncStatus.DELETE_PENDING -> {
@@ -181,5 +262,7 @@ class TaskRepository @Inject constructor(
             }
         }
     }
+
+
 
 }

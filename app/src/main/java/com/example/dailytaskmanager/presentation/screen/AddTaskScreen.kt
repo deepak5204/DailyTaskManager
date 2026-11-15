@@ -190,9 +190,7 @@ fun AddTaskScreen(
                     if (title.isBlank()) return@Button
 
                     if (isEditMode && existingTask != null) {
-
                         // UPDATE EXISTING TASK
-
                         val updatedTask = existingTask!!.copy(
                             title = title,
                             description = description.takeIf { it.isNotBlank() },

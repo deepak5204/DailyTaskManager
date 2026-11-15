@@ -19,9 +19,10 @@ class TaskSyncWorker @AssistedInject constructor(
         return try {
             Log.d("TaskSyncWorker", "Sync worker started")
 
-            taskRepository.syncPendingTasks()
-            taskRepository.syncPendingDeletions()
-            taskRepository.syncTasksFromServer()
+            taskRepository.syncPendingTasks() // create locally pending tasks.
+            taskRepository.syncPendingUpdates() // update existing backend tasks.
+            taskRepository.syncPendingDeletions() // delete tasks marked for deletion.
+            taskRepository.syncTasksFromServer() // fetch backend data and merge it into Room.
 
             Log.d("TaskSyncWorker", "Sync worker completed")
 

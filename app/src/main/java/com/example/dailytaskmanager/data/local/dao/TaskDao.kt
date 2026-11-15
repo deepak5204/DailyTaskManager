@@ -43,6 +43,9 @@ interface TaskDao {
     fun getTaskById(id: Long): Flow<Task?>
 
 
+    @Query("SELECT * FROM Task WHERE id = :id LIMIT 1")
+    suspend fun getTaskByIdOnce(id: Long): Task?
+
     @Query("DELETE FROM Task WHERE createdAt < :cutoffTime AND isCompleted = 1")
     suspend fun deleteTasksOlderThan(cutoffTime: Long): Int
 
@@ -111,5 +114,22 @@ interface TaskDao {
 
     @Query("DELETE FROM Task WHERE id = :localId")
     suspend fun permanentlyDeleteTask(localId: Long)
+
+
+    @Query("SELECT * FROM Task WHERE syncStatus = 'PENDING_UPDATE'")
+    suspend fun getTasksPendingUpdate(): List<Task>
+
+
+    @Query("""
+    UPDATE Task
+    SET syncStatus = 'SYNCED'
+    WHERE id = :localId
+    AND syncStatus = 'PENDING_UPDATE'
+    AND updatedAt = :updatedAt
+""")
+    suspend fun markTaskUpdateAsSynced(
+        localId: Long,
+        updatedAt: Long
+    )
 
 }
