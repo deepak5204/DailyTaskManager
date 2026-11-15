@@ -1,5 +1,6 @@
 package com.example.dailytaskmanager.data.repository
 
+import android.util.Log
 import com.example.dailytaskmanager.data.local.dao.TaskDao
 import com.example.dailytaskmanager.data.local.entity.SyncStatus
 import com.example.dailytaskmanager.data.local.entity.Task
@@ -50,8 +51,7 @@ class TaskRepository @Inject constructor(
     }
 
     suspend fun updateTask(task: Task) {
-        val existingTask = taskDao.getTaskByIdOnce(task.id)
-            ?: return
+        val existingTask = taskDao.getTaskByIdOnce(task.id) ?: return
 
         val newSyncStatus = when (existingTask.syncStatus) {
             SyncStatus.PENDING -> SyncStatus.PENDING
@@ -137,6 +137,7 @@ class TaskRepository @Inject constructor(
 
     suspend fun syncPendingTasks() {
         val pendingTasks = taskDao.getPendingTasks()
+        Log.d("TaskSync", "Pending CREATE count: ${pendingTasks.size}")
 
         for (task in pendingTasks) {
             val response = taskApi.createTask(
@@ -153,20 +154,19 @@ class TaskRepository @Inject constructor(
 
     suspend fun syncPendingUpdates() {
         val pendingUpdates = taskDao.getTasksPendingUpdate()
+        Log.d("TaskSync", "Pending UPDATE count: ${pendingUpdates.size}")
 
         for (task in pendingUpdates) {
             val serverId = task.serverId ?: continue
 
             try {
                 val response = taskApi.updateTask(
-                    taskId = serverId,
-                    request = task.toUpdateTaskRequest()
+                    taskId = serverId, request = task.toUpdateTaskRequest()
                 )
 
                 if (response.success) {
                     taskDao.markTaskUpdateAsSynced(
-                        localId = task.id,
-                        updatedAt = task.updatedAt
+                        localId = task.id, updatedAt = task.updatedAt
                     )
                 }
 
@@ -252,6 +252,8 @@ class TaskRepository @Inject constructor(
     suspend fun syncPendingDeletions() {
         val pendingDeletions = taskDao.getTasksPendingDeletion()
 
+        Log.d("TaskSync", "Pending DELETE count: ${pendingDeletions.size}")
+
         for (task in pendingDeletions) {
             val serverId = task.serverId ?: continue
 
@@ -262,7 +264,6 @@ class TaskRepository @Inject constructor(
             }
         }
     }
-
 
 
 }
