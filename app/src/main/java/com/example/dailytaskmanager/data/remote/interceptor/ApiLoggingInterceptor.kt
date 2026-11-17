@@ -14,7 +14,7 @@ object ApiLoggingInterceptor {
                 HttpLoggingInterceptor.Level.NONE
             }
 
-            redactHeader("Authorization")
+//            redactHeader("Authorization") // hide token from logging
             redactHeader("Cookie")
         }
     }

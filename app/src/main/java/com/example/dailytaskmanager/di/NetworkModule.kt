@@ -5,6 +5,7 @@ import com.example.dailytaskmanager.data.local.TokenDataStore
 import com.example.dailytaskmanager.data.remote.api.TaskApi
 import com.example.dailytaskmanager.data.remote.auth.AuthApi
 import com.example.dailytaskmanager.data.remote.interceptor.ApiLoggingInterceptor
+import com.example.dailytaskmanager.data.remote.interceptor.AuthInterceptor
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import dagger.Module
@@ -32,8 +33,11 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideOkHttpClient(): OkHttpClient {
+    fun provideOkHttpClient(
+        authInterceptor: AuthInterceptor
+    ): OkHttpClient {
         return OkHttpClient.Builder()
+            .addInterceptor(authInterceptor)
             .addInterceptor(ApiLoggingInterceptor.create())
             .build()
     }
@@ -69,5 +73,14 @@ object NetworkModule {
     @Singleton
     fun provideTaskApi(retrofit: Retrofit): TaskApi {
         return retrofit.create(TaskApi::class.java)
+    }
+
+
+    @Provides
+    @Singleton
+    fun provideAuthInterceptor(
+        tokenDataStore: TokenDataStore
+    ): AuthInterceptor {
+        return AuthInterceptor(tokenDataStore)
     }
 }
