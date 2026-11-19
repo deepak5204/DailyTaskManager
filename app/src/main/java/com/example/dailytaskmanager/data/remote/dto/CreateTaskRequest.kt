@@ -5,5 +5,6 @@ data class CreateTaskRequest(
     val description: String?,
     val priority: String,
     val category: String?,
-    val dueDate: String?
+    val dueDate: String?,
+    val createdAt: String
 )

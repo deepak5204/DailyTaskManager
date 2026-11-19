@@ -4,9 +4,9 @@ import android.util.Log
 import com.example.dailytaskmanager.data.local.dao.TaskDao
 import com.example.dailytaskmanager.data.local.entity.SyncStatus
 import com.example.dailytaskmanager.data.local.entity.Task
+import com.example.dailytaskmanager.data.mapper.toCreateTaskRequest
 import com.example.dailytaskmanager.data.mapper.toTask
 import com.example.dailytaskmanager.data.remote.api.TaskApi
-import com.example.dailytaskmanager.data.remote.dto.CreateTaskRequest
 import com.example.dailytaskmanager.data.remote.dto.TaskResponseDto
 import com.example.dailytaskmanager.data.remote.dto.UpdateTaskRequest
 import kotlinx.coroutines.flow.Flow
@@ -109,17 +109,6 @@ class TaskRepository @Inject constructor(
 
     suspend fun deleteTasksOlderThan(cutoffTime: Long): Int {
         return taskDao.deleteTasksOlderThan(cutoffTime)
-    }
-
-    private fun Task.toCreateTaskRequest(): CreateTaskRequest {
-        return CreateTaskRequest(
-            title = title,
-            description = description,
-            priority = priority.name,
-            category = category,
-            dueDate = dueDate?.let {
-                Instant.ofEpochMilli(it).toString()
-            })
     }
 
     private fun Task.toUpdateTaskRequest(): UpdateTaskRequest {

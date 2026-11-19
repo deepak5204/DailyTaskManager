@@ -3,8 +3,27 @@ package com.example.dailytaskmanager.data.mapper
 import com.example.dailytaskmanager.data.local.entity.Priority
 import com.example.dailytaskmanager.data.local.entity.SyncStatus
 import com.example.dailytaskmanager.data.local.entity.Task
+import com.example.dailytaskmanager.data.remote.dto.CreateTaskRequest
 import com.example.dailytaskmanager.data.remote.dto.TaskResponseDto
 import java.time.Instant
+
+
+
+fun Task.toCreateTaskRequest(): CreateTaskRequest {
+    return CreateTaskRequest(
+        title = title,
+        description = description,
+        priority = priority.name,
+        category = category,
+        dueDate = dueDate?.let {
+            Instant.ofEpochMilli(it).toString()
+        },
+        createdAt = Instant.ofEpochMilli(createdAt).toString()
+    )
+}
+
+
+
 
 fun TaskResponseDto.toTask(): Task {
     return Task(

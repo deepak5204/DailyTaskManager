@@ -1,6 +1,7 @@
 package com.example.dailytaskmanager.app
 
 import android.app.Application
+import android.util.Log
 import androidx.hilt.work.HiltWorkerFactory
 import androidx.work.Configuration
 import com.example.dailytaskmanager.utils.WorkManagerScheduler
@@ -19,8 +20,13 @@ class DailyTaskManagerApp : Application(), Configuration.Provider {
     override fun onCreate() {
         super.onCreate()
 
+        Log.e("AppStartup", "Application started")
+
         val scheduler = WorkManagerScheduler()
         scheduler.scheduleTaskCleanup(this)
+        Log.e("AppStartup", "Cleanup scheduled")
+
         scheduler.scheduleTaskSync(this)
+        Log.e("AppStartup", "Sync scheduled")
     }
 }
