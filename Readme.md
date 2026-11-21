@@ -1,8 +1,10 @@
 # 📋 DailyTaskManager
 
-A modern **offline-first Android Task Management application** built using Kotlin, Jetpack Compose, MVVM, Hilt, Room, Kotlin Coroutines, and WorkManager.
+A modern **offline-first Android Task Management application** built using Kotlin, Jetpack Compose,
+MVVM, Hilt, Room, Kotlin Coroutines, and WorkManager.
 
-The application supports local task management, backend integration, JWT authentication, user-specific task ownership, and background data synchronization.
+The application supports local task management, backend integration, JWT authentication,
+user-specific task ownership, and background data synchronization.
 
 
 ---
@@ -38,7 +40,8 @@ The application supports local task management, backend integration, JWT authent
 
 ### 2. Offline-First Architecture
 
-The application follows a local-first approach where Room Database acts as the **Single Source of Truth** for the UI.
+The application follows a local-first approach where Room Database acts as the **Single Source of
+Truth** for the UI.
 
 - Tasks are stored locally before being synchronized with the backend.
 - Users can continue managing locally available tasks without an internet connection.
@@ -49,13 +52,13 @@ The application follows a local-first approach where Room Database acts as the *
 
 Implemented synchronization status tracking to manage local and remote task operations.
 
-| Status | Purpose |
-|---|---|
-| `PENDING` | Newly created task waiting for synchronization |
-| `PENDING_UPDATE` | Updated task waiting for synchronization |
-| `SYNCED` | Task successfully synchronized with the backend |
-| `FAILED` | Synchronization attempt failed |
-| `DELETE_PENDING` | Task deletion waiting for synchronization |
+| Status           | Purpose                                         |
+|------------------|-------------------------------------------------|
+| `PENDING`        | Newly created task waiting for synchronization  |
+| `PENDING_UPDATE` | Updated task waiting for synchronization        |
+| `SYNCED`         | Task successfully synchronized with the backend |
+| `FAILED`         | Synchronization attempt failed                  |
+| `DELETE_PENDING` | Task deletion waiting for synchronization       |
 
 Additional implementation details:
 
@@ -130,31 +133,31 @@ The application follows MVVM with a repository-based data layer.
 
 ## 🛠 Tech Stack
 
-| Technology | Purpose |
-|---|---|
-| Kotlin | Android development |
-| Jetpack Compose | Declarative UI |
-| MVVM | Architecture pattern |
-| Hilt | Dependency injection |
-| Room | Local database |
-| Kotlin Coroutines | Asynchronous programming |
-| Flow | Reactive data streams |
-| Retrofit | REST API communication |
-| WorkManager | Background task synchronization |
-| DataStore | Token and preference storage |
-| Navigation Compose | Screen navigation |
-| Material 3 | UI components |
+| Technology         | Purpose                         |
+|--------------------|---------------------------------|
+| Kotlin             | Android development             |
+| Jetpack Compose    | Declarative UI                  |
+| MVVM               | Architecture pattern            |
+| Hilt               | Dependency injection            |
+| Room               | Local database                  |
+| Kotlin Coroutines  | Asynchronous programming        |
+| Flow               | Reactive data streams           |
+| Retrofit           | REST API communication          |
+| WorkManager        | Background task synchronization |
+| DataStore          | Token and preference storage    |
+| Navigation Compose | Screen navigation               |
+| Material 3         | UI components                   |
 
 ### Backend
 
-| Technology | Purpose |
-|---|---|
+| Technology | Purpose                      |
+|------------|------------------------------|
 | JavaScript | Backend programming language |
-| Node.js | Backend runtime |
-| Express.js | REST API development |
-| MongoDB | Database |
-| JWT | Authentication |
-| Render | Backend deployment |
+| Node.js    | Backend runtime              |
+| Express.js | REST API development         |
+| MongoDB    | Database                     |
+| JWT        | Authentication               |
+| Render     | Backend deployment           |
 
 ---
 
@@ -176,15 +179,19 @@ app/
 │   │   ├── dto/
 │   │   └── interceptor/
 │   │
+│   ├── mapper/
+│   │
 │   └── repository/
 │
 ├── di/
 │
 ├── domain/
 │
+├── navigation/
+│
 ├── presentation/
 │   ├── screen/
-│   ├── navigation/
+│   ├── state/
 │   └── viewmodel/
 │
 ├── worker/
@@ -200,19 +207,19 @@ app/
 
 ### Task Entity
 
-| Field | Type | Description |
-|---|---|---|
-| id | Long | Local primary key |
-| serverId | String? | Backend task identifier |
-| title | String | Task title |
-| description | String? | Task description |
-| priority | Priority | Task priority |
-| category | String? | Task category |
-| dueDate | Long? | Task due date |
-| isCompleted | Boolean | Completion status |
-| createdAt | Long | Creation timestamp |
-| updatedAt | Long | Last update timestamp |
-| syncStatus | SyncStatus | Synchronization state |
+| Field       | Type       | Description             |
+|-------------|------------|-------------------------|
+| id          | Long       | Local primary key       |
+| serverId    | String?    | Backend task identifier |
+| title       | String     | Task title              |
+| description | String?    | Task description        |
+| priority    | Priority   | Task priority           |
+| category    | String?    | Task category           |
+| dueDate     | Long?      | Task due date           |
+| isCompleted | Boolean    | Completion status       |
+| createdAt   | Long       | Creation timestamp      |
+| updatedAt   | Long       | Last update timestamp   |
+| syncStatus  | SyncStatus | Synchronization state   |
 
 ---
 
@@ -256,14 +263,13 @@ https://daily-task-manager-backend-1.onrender.com
 - Synchronization status management
 - WorkManager background synchronization
 - Local and remote data merging
+- Conflict resolution and retry handling
+- DataStore preferences
 
 ### Further Improvements
 
-- Complete and refine task CRUD synchronization
-- Improve conflict resolution and retry handling
 - Search, filter, and sort tasks
 - Dark mode
-- DataStore preferences
 - Unit testing
 - UI testing
 - Improved error handling and synchronization monitoring
@@ -295,15 +301,15 @@ git clone https://github.com/your-username/DailyTaskManager.git
 
 ## ⚙️ Minimum Requirements
 
-| Requirement | Version |
-|---|---|
+| Requirement    | Version                       |
+|----------------|-------------------------------|
 | Android Studio | Narwhal Feature Drop or newer |
-| Kotlin | 2.0.21 |
-| AGP | 8.12.3 |
-| Min SDK | 26 |
-| Compile SDK | 36 |
-| Target SDK | 36 |
-| JDK | 17 |
+| Kotlin         | 2.0.21                        |
+| AGP            | 8.12.3                        |
+| Min SDK        | 26                            |
+| Compile SDK    | 36                            |
+| Target SDK     | 36                            |
+| JDK            | 17                            |
 
 ---
 
@@ -333,12 +339,9 @@ This project provides hands-on experience with:
 - Database management using Room and MongoDB.
 - Kotlin Coroutines and Flow.
 - Error handling and data consistency.
+- Backend deployment
 
 ---
-
-## 📄 License
-
-This project is intended for learning and portfolio purposes.
 
 ---
 
@@ -346,14 +349,39 @@ This project is intended for learning and portfolio purposes.
 
 **Deepak Kumar**
 
-Android Developer
+Android Developer | Full-Stack Application Development
 
-- Kotlin
-- Java
-- Jetpack Compose
-- MVVM
-- Hilt
-- Room
-- Retrofit
-- WorkManager
-- Kotlin Coroutines
+Android Development
+
+Kotlin and Java
+
+Jetpack Compose
+
+MVVM Architecture
+
+Hilt
+
+Room Database
+
+Retrofit
+
+WorkManager
+
+Kotlin Coroutines
+
+Backend Development
+
+JavaScript
+
+Node.js
+
+Express.js
+
+MongoDB
+
+REST API Development
+
+JWT Authentication
+
+I designed and developed both the Android application and its backend, including authentication,
+user-specific data management, and offline-first synchronization.
