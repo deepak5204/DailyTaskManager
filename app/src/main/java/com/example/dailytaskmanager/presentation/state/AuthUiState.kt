@@ -1,9 +1,7 @@
 package com.example.dailytaskmanager.presentation.state
 
 enum class AuthOperation {
-    NONE,
-    LOGIN,
-    REGISTER
+    NONE, LOGIN, REGISTER
 }
 
 data class AuthUiState(

@@ -18,12 +18,10 @@ class MainActivity : ComponentActivity() {
 
 
         WorkManager.getInstance(applicationContext)
-            .getWorkInfosForUniqueWorkLiveData("task_cleanup")
-            .observe(this) { workInfos ->
+            .getWorkInfosForUniqueWorkLiveData("task_cleanup").observe(this) { workInfos ->
                 workInfos.forEach { info ->
                     Log.d(
-                        "PeriodicWork",
-                        "State=${info.state}, ID=${info.id}"
+                        "PeriodicWork", "State=${info.state}, ID=${info.id}"
                     )
                 }
             }

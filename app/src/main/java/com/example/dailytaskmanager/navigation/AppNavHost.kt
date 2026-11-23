@@ -49,73 +49,53 @@ fun AppNavHost(modifier: Modifier = Modifier) {
             ) {
 
                 composable(Screen.TaskListScreen.route) {
-                    TaskListScreen(
-                        onAddTaskClick = {
-                            navController.navigate(Screen.AddTaskListScreen.route)
-                        },
-                        onEditTaskClick = { task ->
-                            navController.navigate(
-                                Screen.EditTaskScreen.createRoute(task.id)
-                            )
-                        }
-                    )
+                    TaskListScreen(onAddTaskClick = {
+                        navController.navigate(Screen.AddTaskListScreen.route)
+                    }, onEditTaskClick = { task ->
+                        navController.navigate(
+                            Screen.EditTaskScreen.createRoute(task.id)
+                        )
+                    })
                 }
 
                 composable(Screen.AddTaskListScreen.route) {
-                    AddTaskScreen(
-                        viewModel = viewModel,
-                        onNavigateBack = {
-                            navController.popBackStack()
-                        },
-                        onSaveClick = {
-                            navController.popBackStack()
-                        }
-                    )
+                    AddTaskScreen(viewModel = viewModel, onNavigateBack = {
+                        navController.popBackStack()
+                    }, onSaveClick = {
+                        navController.popBackStack()
+                    })
                 }
 
                 composable(Screen.EditTaskScreen.route) { backStackEntry ->
 
-                    val taskId = backStackEntry.arguments
-                        ?.getString("taskId")
-                        ?.toLongOrNull()
+                    val taskId = backStackEntry.arguments?.getString("taskId")?.toLongOrNull()
 
-                    AddTaskScreen(
-                        viewModel = viewModel,
-                        taskId = taskId,
-                        onNavigateBack = {
-                            navController.popBackStack()
-                        },
-                        onSaveClick = {
-                            navController.popBackStack()
-                        }
-                    )
+                    AddTaskScreen(viewModel = viewModel, taskId = taskId, onNavigateBack = {
+                        navController.popBackStack()
+                    }, onSaveClick = {
+                        navController.popBackStack()
+                    })
                 }
 
                 composable(Screen.LoginScreen.route) {
-                    LoginScreen(
-                        onLoginSuccess = {
-                            navController.navigate(Screen.TaskListScreen.route) {
-                                popUpTo(Screen.LoginScreen.route) {
-                                    inclusive = true
-                                }
-                                launchSingleTop = true
+                    LoginScreen(onLoginSuccess = {
+                        navController.navigate(Screen.TaskListScreen.route) {
+                            popUpTo(Screen.LoginScreen.route) {
+                                inclusive = true
                             }
-                        },
-                        onRegisterClick = {
-                            navController.navigate(Screen.RegisterScreen.route)
+                            launchSingleTop = true
                         }
-                    )
+                    }, onRegisterClick = {
+                        navController.navigate(Screen.RegisterScreen.route)
+                    })
                 }
 
                 composable(Screen.RegisterScreen.route) {
-                    RegisterScreen(
-                        onRegisterSuccess = {
-                            navController.popBackStack()
-                        },
-                        onLoginClick = {
-                            navController.popBackStack()
-                        }
-                    )
+                    RegisterScreen(onRegisterSuccess = {
+                        navController.popBackStack()
+                    }, onLoginClick = {
+                        navController.popBackStack()
+                    })
                 }
             }
         }
@@ -125,8 +105,7 @@ fun AppNavHost(modifier: Modifier = Modifier) {
 @Composable
 fun SplashLoadingScreen() {
     androidx.compose.foundation.layout.Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = androidx.compose.ui.Alignment.Center
+        modifier = Modifier.fillMaxSize(), contentAlignment = androidx.compose.ui.Alignment.Center
     ) {
         androidx.compose.material3.CircularProgressIndicator()
     }

@@ -8,7 +8,6 @@ import com.example.dailytaskmanager.data.remote.dto.TaskResponseDto
 import java.time.Instant
 
 
-
 fun Task.toCreateTaskRequest(): CreateTaskRequest {
     return CreateTaskRequest(
         title = title,
@@ -21,8 +20,6 @@ fun Task.toCreateTaskRequest(): CreateTaskRequest {
         createdAt = Instant.ofEpochMilli(createdAt).toString()
     )
 }
-
-
 
 
 fun TaskResponseDto.toTask(): Task {

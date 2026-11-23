@@ -37,10 +37,7 @@ fun LoginScreen(
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     LaunchedEffect(uiState.isSuccessful, uiState.operation) {
-        if (
-            uiState.isSuccessful &&
-            uiState.operation == AuthOperation.LOGIN
-        ) {
+        if (uiState.isSuccessful && uiState.operation == AuthOperation.LOGIN) {
             onLoginSuccess()
             viewModel.clearState()
         }
@@ -57,13 +54,11 @@ fun LoginScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(24.dp),
-        verticalArrangement = Arrangement.Center
+            .padding(24.dp), verticalArrangement = Arrangement.Center
     ) {
 
         Text(
-            text = "Welcome back",
-            style = MaterialTheme.typography.headlineMedium
+            text = "Welcome back", style = MaterialTheme.typography.headlineMedium
         )
 
         Spacer(modifier = Modifier.height(8.dp))
@@ -95,8 +90,7 @@ fun LoginScreen(
 
         uiState.errorMessage?.let { error ->
             Text(
-                text = error,
-                color = MaterialTheme.colorScheme.error
+                text = error, color = MaterialTheme.colorScheme.error
             )
 
             Spacer(modifier = Modifier.height(8.dp))
@@ -108,8 +102,7 @@ fun LoginScreen(
             onClick = {
 
                 viewModel.login(email = email, password = password)
-            },
-            modifier = Modifier.fillMaxWidth()
+            }, modifier = Modifier.fillMaxWidth()
         ) {
             if (uiState.isLoading) {
                 Text("Logging...")

@@ -36,22 +36,16 @@ object NetworkModule {
     fun provideOkHttpClient(
         authInterceptor: AuthInterceptor
     ): OkHttpClient {
-        return OkHttpClient.Builder()
-            .addInterceptor(authInterceptor)
-            .addInterceptor(ApiLoggingInterceptor.create())
-            .build()
+        return OkHttpClient.Builder().addInterceptor(authInterceptor)
+            .addInterceptor(ApiLoggingInterceptor.create()).build()
     }
 
     @Provides
     @Singleton
-    fun provideRetrofit( okHttpClient: OkHttpClient): Retrofit{
-        return Retrofit.Builder()
-            .baseUrl(BASE_URL)
-            .client(okHttpClient)
-            .addConverterFactory(
-                GsonConverterFactory.create()
-            )
-            .build()
+    fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit {
+        return Retrofit.Builder().baseUrl(BASE_URL).client(okHttpClient).addConverterFactory(
+            GsonConverterFactory.create()
+        ).build()
     }
 
 

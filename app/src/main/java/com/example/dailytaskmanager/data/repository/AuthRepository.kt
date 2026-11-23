@@ -14,8 +14,7 @@ import kotlinx.coroutines.flow.map
 
 @Singleton
 class AuthRepository @Inject constructor(
-    private val authApi: AuthApi,
-    private val tokenDataStore: TokenDataStore
+    private val authApi: AuthApi, private val tokenDataStore: TokenDataStore
 ) {
 
     suspend fun login(
@@ -24,8 +23,7 @@ class AuthRepository @Inject constructor(
         val response = authApi.login(request)
 
         if (response.isSuccessful) {
-            val loginResponse = response.body()
-                ?: throw Exception("Login response body is empty")
+            val loginResponse = response.body() ?: throw Exception("Login response body is empty")
 
             // Save JWT after successful login
             tokenDataStore.saveToken(loginResponse.token)
@@ -34,8 +32,7 @@ class AuthRepository @Inject constructor(
 
         } else {
             throw Exception(
-                response.errorBody()?.string()
-                    ?: "Login failed. Please try again."
+                response.errorBody()?.string() ?: "Login failed. Please try again."
             )
         }
     }
@@ -46,12 +43,10 @@ class AuthRepository @Inject constructor(
         val response = authApi.register(request)
 
         if (response.isSuccessful) {
-            return response.body()
-                ?: throw Exception("Registration response body is empty")
+            return response.body() ?: throw Exception("Registration response body is empty")
         } else {
             throw Exception(
-                response.errorBody()?.string()
-                    ?: "Registration failed. Please try again."
+                response.errorBody()?.string() ?: "Registration failed. Please try again."
             )
         }
     }

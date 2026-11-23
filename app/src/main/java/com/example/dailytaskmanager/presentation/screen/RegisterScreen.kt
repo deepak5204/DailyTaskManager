@@ -41,10 +41,7 @@ fun RegisterScreen(
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     LaunchedEffect(uiState.isSuccessful, uiState.operation) {
-        if (
-            uiState.isSuccessful &&
-            uiState.operation == AuthOperation.REGISTER
-        ) {
+        if (uiState.isSuccessful && uiState.operation == AuthOperation.REGISTER) {
             onRegisterSuccess()
             viewModel.clearState()
         }
@@ -53,12 +50,10 @@ fun RegisterScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(24.dp),
-        verticalArrangement = Arrangement.Center
+            .padding(24.dp), verticalArrangement = Arrangement.Center
     ) {
         Text(
-            text = "Create Account",
-            style = MaterialTheme.typography.headlineMedium
+            text = "Create Account", style = MaterialTheme.typography.headlineMedium
         )
 
         Spacer(modifier = Modifier.height(8.dp))
@@ -114,16 +109,14 @@ fun RegisterScreen(
         validationError?.let { error ->
             Spacer(modifier = Modifier.height(8.dp))
             Text(
-                text = error,
-                color = MaterialTheme.colorScheme.error
+                text = error, color = MaterialTheme.colorScheme.error
             )
         }
 
         uiState.errorMessage?.let { error ->
             Spacer(modifier = Modifier.height(8.dp))
             Text(
-                text = error,
-                color = MaterialTheme.colorScheme.error
+                text = error, color = MaterialTheme.colorScheme.error
             )
         }
 
@@ -135,23 +128,19 @@ fun RegisterScreen(
                     name.isBlank() -> "Please enter your name."
                     email.isBlank() -> "Please enter your email."
                     password.isBlank() -> "Please enter a password."
-                    confirmPassword.isBlank() ->
-                        "Please confirm your password."
-                    password != confirmPassword ->
-                        "Passwords do not match."
+                    confirmPassword.isBlank() -> "Please confirm your password."
+
+                    password != confirmPassword -> "Passwords do not match."
+
                     else -> null
                 }
 
                 if (validationError == null) {
                     viewModel.register(
-                        name = name.trim(),
-                        email = email.trim(),
-                        password = password
+                        name = name.trim(), email = email.trim(), password = password
                     )
                 }
-            },
-            modifier = Modifier.fillMaxWidth(),
-            enabled = !uiState.isLoading
+            }, modifier = Modifier.fillMaxWidth(), enabled = !uiState.isLoading
         ) {
             Text(
                 text = if (uiState.isLoading) {
@@ -165,8 +154,7 @@ fun RegisterScreen(
         Spacer(modifier = Modifier.height(8.dp))
 
         TextButton(
-            onClick = onLoginClick,
-            enabled = !uiState.isLoading
+            onClick = onLoginClick, enabled = !uiState.isLoading
         ) {
             Text("Already have an account? Login")
         }

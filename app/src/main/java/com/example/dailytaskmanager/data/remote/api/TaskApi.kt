@@ -30,7 +30,6 @@ interface TaskApi {
 
     @PUT("api/tasks/{taskId}")
     suspend fun updateTask(
-        @Path("taskId") taskId: String,
-        @Body request: UpdateTaskRequest
+        @Path("taskId") taskId: String, @Body request: UpdateTaskRequest
     ): UpdateTaskResponse
 }

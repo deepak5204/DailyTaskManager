@@ -120,16 +120,17 @@ interface TaskDao {
     suspend fun getTasksPendingUpdate(): List<Task>
 
 
-    @Query("""
+    @Query(
+        """
     UPDATE Task
     SET syncStatus = 'SYNCED'
     WHERE id = :localId
     AND syncStatus = 'PENDING_UPDATE'
     AND updatedAt = :updatedAt
-""")
+"""
+    )
     suspend fun markTaskUpdateAsSynced(
-        localId: Long,
-        updatedAt: Long
+        localId: Long, updatedAt: Long
     )
 
 }

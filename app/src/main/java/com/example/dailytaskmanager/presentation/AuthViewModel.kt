@@ -40,26 +40,22 @@ class AuthViewModel @Inject constructor(
     }
 
     fun login(
-        email: String,
-        password: String
+        email: String, password: String
     ) {
         viewModelScope.launch {
             _uiState.value = AuthUiState(
-                isLoading = true,
-                operation = AuthOperation.LOGIN
+                isLoading = true, operation = AuthOperation.LOGIN
             )
 
             try {
                 authRepository.login(
                     LoginRequest(
-                        email = email,
-                        password = password
+                        email = email, password = password
                     )
                 )
 
                 _uiState.value = AuthUiState(
-                    operation = AuthOperation.LOGIN,
-                    isSuccessful = true
+                    operation = AuthOperation.LOGIN, isSuccessful = true
                 )
 
             } catch (exception: CancellationException) {
@@ -67,36 +63,29 @@ class AuthViewModel @Inject constructor(
             } catch (exception: Exception) {
                 _uiState.value = AuthUiState(
                     operation = AuthOperation.LOGIN,
-                    errorMessage = exception.message
-                        ?: "Login failed. Please try again."
+                    errorMessage = exception.message ?: "Login failed. Please try again."
                 )
             }
         }
     }
 
     fun register(
-        name: String,
-        email: String,
-        password: String
+        name: String, email: String, password: String
     ) {
         viewModelScope.launch {
             _uiState.value = AuthUiState(
-                isLoading = true,
-                operation = AuthOperation.REGISTER
+                isLoading = true, operation = AuthOperation.REGISTER
             )
 
             try {
                 authRepository.register(
                     RegisterRequest(
-                        name = name,
-                        email = email,
-                        password = password
+                        name = name, email = email, password = password
                     )
                 )
 
                 _uiState.value = AuthUiState(
-                    operation = AuthOperation.REGISTER,
-                    isSuccessful = true
+                    operation = AuthOperation.REGISTER, isSuccessful = true
                 )
 
             } catch (exception: CancellationException) {
@@ -104,8 +93,7 @@ class AuthViewModel @Inject constructor(
             } catch (exception: Exception) {
                 _uiState.value = AuthUiState(
                     operation = AuthOperation.REGISTER,
-                    errorMessage = exception.message
-                        ?: "Registration failed. Please try again."
+                    errorMessage = exception.message ?: "Registration failed. Please try again."
                 )
             }
         }

@@ -7,7 +7,7 @@ import com.example.dailytaskmanager.data.local.entity.SyncStatus
 class Converters {
 
     @TypeConverter
-    fun fromPriority(priority: Priority) : String {
+    fun fromPriority(priority: Priority): String {
         return priority.name
     }
 

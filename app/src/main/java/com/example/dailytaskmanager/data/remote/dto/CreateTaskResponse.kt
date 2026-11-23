@@ -3,14 +3,11 @@ package com.example.dailytaskmanager.data.remote.dto
 import com.google.gson.annotations.SerializedName
 
 data class CreateTaskResponse(
-    val success: Boolean,
-    val message: String,
-    val task: TaskResponseDto
+    val success: Boolean, val message: String, val task: TaskResponseDto
 )
 
 data class TaskResponseDto(
-    @SerializedName("_id")
-    val id: String,
+    @SerializedName("_id") val id: String,
     val title: String,
     val description: String?,
     val priority: String,
@@ -23,7 +20,5 @@ data class TaskResponseDto(
 
 
 data class GetTasksResponse(
-    val success: Boolean,
-    val count: Int,
-    val tasks: List<TaskResponseDto>
+    val success: Boolean, val count: Int, val tasks: List<TaskResponseDto>
 )
