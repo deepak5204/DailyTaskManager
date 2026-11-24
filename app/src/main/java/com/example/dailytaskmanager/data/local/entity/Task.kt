@@ -12,7 +12,7 @@ data class Task(
     val description: String?,
     val priority: Priority = Priority.LOW,
     val category: String?,
-    val dueDate: Long? = null,
+    val workDate: Long? = null,
     val isCompleted: Boolean = false,
     val createdAt: Long = System.currentTimeMillis(),
     val updatedAt: Long = System.currentTimeMillis(),

@@ -12,7 +12,7 @@ data class TaskResponseDto(
     val description: String?,
     val priority: String,
     val category: String?,
-    val dueDate: String?,
+    val workDate: String?,
     val isCompleted: Boolean,
     val createdAt: String,
     val updatedAt: String

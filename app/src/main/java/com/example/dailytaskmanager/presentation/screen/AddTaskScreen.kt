@@ -97,7 +97,7 @@ fun AddTaskScreen(
             selectedPriority = task.priority
             selectedCategory = task.category ?: "Study"
 
-            task.dueDate?.let { timestamp ->
+            task.workDate?.let { timestamp ->
                 val dateTime = Instant.ofEpochMilli(timestamp)
                     .atZone(ZoneId.systemDefault())
 
@@ -166,7 +166,7 @@ fun AddTaskScreen(
                 // Due Date Selection Section
                 Column {
                     Text(
-                        text = "Due Date & Time",
+                        text = "Work Date",
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.SemiBold
                     )
@@ -191,7 +191,7 @@ fun AddTaskScreen(
                             Text(
                                 text = selectedDueDate?.format(
                                     DateTimeFormatter.ofPattern("dd MMM yyyy")
-                                ) ?: "Select due date"
+                                ) ?: "Select work date"
                             )
                         }
 

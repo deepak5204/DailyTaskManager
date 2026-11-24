@@ -10,7 +10,7 @@ import com.example.dailytaskmanager.data.local.entity.Task
 // Generate a SQLite database for me
 //Instead of writing SQL manually, Room generates everything.
 @Database(
-    entities = [Task::class], version = 2, exportSchema = false
+    entities = [Task::class], version = 3, exportSchema = false
 )
 
 @TypeConverters(Converters::class)

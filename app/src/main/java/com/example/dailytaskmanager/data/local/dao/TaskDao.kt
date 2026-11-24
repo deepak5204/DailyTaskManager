@@ -77,7 +77,7 @@ interface TaskDao {
         description = :description,
         priority = :priority,
         category = :category,
-        dueDate = :dueDate,
+        workDate = :workDate,
         isCompleted = :isCompleted,
         createdAt = :createdAt,
         updatedAt = :updatedAt,
@@ -91,7 +91,7 @@ interface TaskDao {
         description: String?,
         priority: String,
         category: String?,
-        dueDate: Long?,
+        workDate: Long?,
         isCompleted: Boolean,
         createdAt: Long,
         updatedAt: Long

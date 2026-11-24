@@ -76,7 +76,7 @@ class TaskRepository @Inject constructor(
             description = task.description,
             priority = task.priority,
             category = task.category,
-            dueDate = task.dueDate,
+            workDate = task.workDate,
             isCompleted = task.isCompleted,
             updatedAt = System.currentTimeMillis(),
             syncStatus = newSyncStatus
@@ -117,7 +117,7 @@ class TaskRepository @Inject constructor(
             description = description,
             priority = priority.name,
             category = category,
-            dueDate = dueDate?.let {
+            workDate = workDate?.let {
                 Instant.ofEpochMilli(it).toString()
             },
             isCompleted = isCompleted
@@ -217,7 +217,7 @@ class TaskRepository @Inject constructor(
                     description = task.description,
                     priority = task.priority.name,
                     category = task.category,
-                    dueDate = task.dueDate,
+                    workDate = task.workDate,
                     isCompleted = task.isCompleted,
                     createdAt = task.createdAt,
                     updatedAt = task.updatedAt
