@@ -46,7 +46,6 @@ import com.example.dailytaskmanager.data.local.entity.Task
 import com.example.dailytaskmanager.presentation.TaskViewModel
 import java.time.Instant
 import java.time.LocalDate
-import java.time.LocalTime
 import java.time.ZoneId
 import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
@@ -77,12 +76,8 @@ fun AddTaskScreen(
         mutableStateOf(null)
     }
 
-    var selectedDueDate by remember {
+    var selectedWorkDate by remember {
         mutableStateOf<LocalDate?>(null)
-    }
-
-    var selectedDueTime by remember {
-        mutableStateOf<LocalTime?>(null)
     }
 
     var showDatePicker by remember {
@@ -90,7 +85,6 @@ fun AddTaskScreen(
     }
 
     LaunchedEffect(existingTask) {
-
         existingTask?.let { task ->
             title = task.title
             description = task.description.orEmpty()
@@ -98,19 +92,19 @@ fun AddTaskScreen(
             selectedCategory = task.category ?: "Study"
 
             task.workDate?.let { timestamp ->
-                val dateTime = Instant.ofEpochMilli(timestamp)
+                selectedWorkDate = Instant.ofEpochMilli(timestamp)
                     .atZone(ZoneId.systemDefault())
-
-                selectedDueDate = dateTime.toLocalDate()
-                selectedDueTime = dateTime.toLocalTime()
+                    .toLocalDate()
             } ?: run {
-                selectedDueDate = null
-                selectedDueTime = null
+                selectedWorkDate = null
             }
         }
-
-
     }
+
+    val workDateTimestamp = selectedWorkDate
+        ?.atStartOfDay(ZoneId.systemDefault())
+        ?.toInstant()
+        ?.toEpochMilli()
 
     Scaffold(
         topBar = {
@@ -173,7 +167,10 @@ fun AddTaskScreen(
 
                     Spacer(modifier = Modifier.height(8.dp))
 
-                    Row() {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
                         OutlinedButton(
                             onClick = {
                                 showDatePicker = true
@@ -189,13 +186,22 @@ fun AddTaskScreen(
                             Spacer(modifier = Modifier.size(8.dp))
 
                             Text(
-                                text = selectedDueDate?.format(
+                                text = selectedWorkDate?.format(
                                     DateTimeFormatter.ofPattern("dd MMM yyyy")
                                 ) ?: "Select work date"
                             )
                         }
 
-                }
+                        if (selectedWorkDate != null) {
+                            TextButton(
+                                onClick = {
+                                    selectedWorkDate = null
+                                }
+                            ) {
+                                Text("Clear")
+                            }
+                        }
+                    }
                 }
 
                 // Priority Selection Section
@@ -268,6 +274,7 @@ fun AddTaskScreen(
                             description = description.takeIf { it.isNotBlank() },
                             priority = selectedPriority,
                             category = selectedCategory,
+                            workDate = workDateTimestamp,
                             updatedAt = System.currentTimeMillis()
                         )
 
@@ -278,7 +285,10 @@ fun AddTaskScreen(
                             title = title,
                             description = description.takeIf { it.isNotBlank() },
                             priority = selectedPriority,
-                            category = selectedCategory
+                            category = selectedCategory,
+                            workDate = workDateTimestamp,
+                            createdAt = System.currentTimeMillis(),
+                            updatedAt = System.currentTimeMillis()
                         )
 
                         viewModel.insertTask(newTask)
@@ -292,7 +302,7 @@ fun AddTaskScreen(
                 shape = RoundedCornerShape(14.dp)
             ) {
                 Text(
-                    text = if (isEditMode) "Update Task" else "Save Task",
+                    text = if (isEditMode) "Update Task" else "Create Task",
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold
                 )
@@ -306,7 +316,7 @@ fun AddTaskScreen(
         val today = LocalDate.now()
 
         val datePickerState = rememberDatePickerState(
-            initialSelectedDateMillis = selectedDueDate
+            initialSelectedDateMillis = selectedWorkDate
                 ?.atStartOfDay(ZoneOffset.UTC)
                 ?.toInstant()
                 ?.toEpochMilli(),
@@ -330,7 +340,7 @@ fun AddTaskScreen(
                 TextButton(
                     onClick = {
                         datePickerState.selectedDateMillis?.let { millis ->
-                            selectedDueDate = Instant.ofEpochMilli(millis)
+                            selectedWorkDate = Instant.ofEpochMilli(millis)
                                 .atZone(ZoneOffset.UTC)
                                 .toLocalDate()
                         }

@@ -6,13 +6,12 @@ import com.example.dailytaskmanager.data.local.entity.SyncStatus
 import com.example.dailytaskmanager.data.local.entity.Task
 import com.example.dailytaskmanager.data.mapper.toCreateTaskRequest
 import com.example.dailytaskmanager.data.mapper.toTask
+import com.example.dailytaskmanager.data.mapper.toUpdateTaskRequest
 import com.example.dailytaskmanager.data.remote.api.TaskApi
 import com.example.dailytaskmanager.data.remote.dto.TaskResponseDto
-import com.example.dailytaskmanager.data.remote.dto.UpdateTaskRequest
 import kotlinx.coroutines.flow.Flow
 import retrofit2.HttpException
 import java.io.IOException
-import java.time.Instant
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -111,18 +110,7 @@ class TaskRepository @Inject constructor(
         return taskDao.deleteTasksOlderThan(cutoffTime)
     }
 
-    private fun Task.toUpdateTaskRequest(): UpdateTaskRequest {
-        return UpdateTaskRequest(
-            title = title,
-            description = description,
-            priority = priority.name,
-            category = category,
-            workDate = workDate?.let {
-                Instant.ofEpochMilli(it).toString()
-            },
-            isCompleted = isCompleted
-        )
-    }
+
 
     suspend fun syncPendingTasks() {
         val pendingTasks = taskDao.getPendingTasks()

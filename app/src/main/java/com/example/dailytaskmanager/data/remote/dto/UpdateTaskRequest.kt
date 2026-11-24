@@ -6,5 +6,6 @@ data class UpdateTaskRequest(
     val priority: String,
     val category: String?,
     val workDate: String?,
-    val isCompleted: Boolean
+    val isCompleted: Boolean,
+    val updatedAt: String
 )
