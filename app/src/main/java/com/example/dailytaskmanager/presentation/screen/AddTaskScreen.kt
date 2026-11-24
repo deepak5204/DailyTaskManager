@@ -9,12 +9,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Check
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
@@ -28,10 +26,8 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.TimePicker
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.rememberDatePickerState
-import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -89,10 +85,6 @@ fun AddTaskScreen(
     }
 
     var showDatePicker by remember {
-        mutableStateOf(false)
-    }
-
-    var showTimePicker by remember {
         mutableStateOf(false)
     }
 
@@ -202,30 +194,7 @@ fun AddTaskScreen(
                             )
                         }
 
-                        Spacer(modifier = Modifier.width(8.dp))
-
-                        OutlinedButton(
-                            onClick = {
-                                showTimePicker = true
-                            },
-                            shape = RoundedCornerShape(12.dp),
-                            enabled = selectedDueDate != null,
-                            modifier = Modifier.weight(1f)
-                        ) {
-                            Icon(
-                                imageVector = Icons.Default.Check,
-                                contentDescription = null
-                            )
-
-                            Spacer(modifier = Modifier.size(8.dp))
-
-                            Text(
-                                text = selectedDueTime?.format(
-                                    DateTimeFormatter.ofPattern("hh:mm a")
-                                ) ?: "Select due time"
-                            )
-                        }
-                    }
+                }
                 }
 
                 // Priority Selection Section
@@ -373,51 +342,6 @@ fun AddTaskScreen(
         }
     }
 
-    if (showTimePicker) {
-
-        val timePickerState = rememberTimePickerState(
-            initialHour = selectedDueTime?.hour ?: 9,
-            initialMinute = selectedDueTime?.minute ?: 0,
-            is24Hour = false
-        )
-
-        AlertDialog(
-            onDismissRequest = {
-                showTimePicker = false
-            },
-            title = {
-                Text("Select Due Time")
-            },
-            text = {
-                TimePicker(
-                    state = timePickerState
-                )
-            },
-            confirmButton = {
-                TextButton(
-                    onClick = {
-                        selectedDueTime = LocalTime.of(
-                            timePickerState.hour,
-                            timePickerState.minute
-                        )
-
-                        showTimePicker = false
-                    }
-                ) {
-                    Text("Confirm")
-                }
-            },
-            dismissButton = {
-                TextButton(
-                    onClick = {
-                        showTimePicker = false
-                    }
-                ) {
-                    Text("Cancel")
-                }
-            }
-        )
-    }
 }
 
 
