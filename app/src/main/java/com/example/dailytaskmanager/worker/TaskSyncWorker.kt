@@ -17,20 +17,30 @@ class TaskSyncWorker @AssistedInject constructor(
 ) : CoroutineWorker(appContext, workerParams) {
     override suspend fun doWork(): Result {
         return try {
-            Log.d("TaskSyncWorker", "Sync worker started")
+            Log.d("TaskSyncWorker", "========== SYNC STARTED ==========")
 
-            taskRepository.syncPendingTasks() // create locally pending tasks.
-            taskRepository.syncPendingUpdates() // update existing backend tasks.
-            taskRepository.syncPendingDeletions() // delete tasks marked for deletion.
-            taskRepository.syncTasksFromServer() // fetch backend data and merge it into Room.
+            Log.d("TaskSyncWorker", "Starting pending CREATE sync")
+            taskRepository.syncPendingTasks()
+            Log.d("TaskSyncWorker", "Pending CREATE sync completed")
 
-            Log.d("TaskSyncWorker", "Sync worker completed")
+            Log.d("TaskSyncWorker", "Starting pending UPDATE sync")
+            taskRepository.syncPendingUpdates()
+            Log.d("TaskSyncWorker", "Pending UPDATE sync completed")
+
+            Log.d("TaskSyncWorker", "Starting pending DELETE sync")
+            taskRepository.syncPendingDeletions()
+            Log.d("TaskSyncWorker", "Pending DELETE sync completed")
+
+            Log.d("TaskSyncWorker", "Starting SERVER GET sync")
+            taskRepository.syncTasksFromServer()
+            Log.d("TaskSyncWorker", "SERVER GET sync completed")
+
+            Log.d("TaskSyncWorker", "========== SYNC COMPLETED ==========")
 
             Result.success()
 
         } catch (e: Exception) {
             Log.e("TaskSyncWorker", "Sync worker failed", e)
-
             Result.retry()
         }
     }

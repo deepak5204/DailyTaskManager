@@ -1,6 +1,7 @@
 package com.example.dailytaskmanager.data.repository
 
 import android.util.Log
+import com.example.dailytaskmanager.data.local.dao.SyncStatusCount
 import com.example.dailytaskmanager.data.local.dao.TaskDao
 import com.example.dailytaskmanager.data.local.entity.SyncStatus
 import com.example.dailytaskmanager.data.local.entity.Task
@@ -243,4 +244,7 @@ class TaskRepository @Inject constructor(
     }
 
 
+    fun observeSyncStatusCounts(): Flow<List<SyncStatusCount>> {
+        return taskDao.observeSyncStatusCounts()
+    }
 }

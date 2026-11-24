@@ -5,6 +5,7 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
+import com.example.dailytaskmanager.data.local.entity.SyncStatus
 import com.example.dailytaskmanager.data.local.entity.Task
 import kotlinx.coroutines.flow.Flow
 
@@ -133,4 +134,19 @@ interface TaskDao {
         localId: Long, updatedAt: Long
     )
 
+
+    @Query("""
+    SELECT syncStatus, COUNT(*) AS count
+    FROM Task
+    GROUP BY syncStatus
+""")
+    fun observeSyncStatusCounts(): Flow<List<SyncStatusCount>>
+
+
 }
+
+
+  data class SyncStatusCount(
+    val syncStatus: SyncStatus,
+    val count: Int
+)

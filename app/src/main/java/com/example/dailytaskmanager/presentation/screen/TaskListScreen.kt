@@ -273,7 +273,7 @@ fun TaskCard(
                     }
 
 
-                    // Due date
+                    // Create date
                     Text(
                         text = formatTaskDate(task.createdAt),
                         style = MaterialTheme.typography.labelLarge,
