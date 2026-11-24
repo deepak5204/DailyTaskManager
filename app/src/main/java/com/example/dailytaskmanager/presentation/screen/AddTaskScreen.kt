@@ -24,6 +24,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SelectableDates
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
@@ -302,11 +303,23 @@ fun AddTaskScreen(
 
 
     if (showDatePicker) {
+        val today = LocalDate.now()
+
         val datePickerState = rememberDatePickerState(
             initialSelectedDateMillis = selectedDueDate
                 ?.atStartOfDay(ZoneOffset.UTC)
                 ?.toInstant()
-                ?.toEpochMilli()
+                ?.toEpochMilli(),
+            selectableDates = object : SelectableDates {
+
+                override fun isSelectableDate(utcTimeMillis: Long): Boolean {
+                    val selectedDate = Instant.ofEpochMilli(utcTimeMillis)
+                        .atZone(ZoneOffset.UTC)
+                        .toLocalDate()
+
+                    return !selectedDate.isBefore(today)
+                }
+            }
         )
 
         DatePickerDialog(
