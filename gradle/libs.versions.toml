@@ -28,6 +28,7 @@ hilt-navigation-compose = "1.2.0"
 navigation-compose = "2.8.8"
 workRuntimeKtx = "2.11.2"
 okhttp = "4.12.0"
+material3 = "1.4.0"
 
 
 
@@ -82,6 +83,7 @@ androidx-hilt-compiler = { group = "androidx.hilt", name = "hilt-compiler", vers
 
 okhttp = { group = "com.squareup.okhttp3", name = "okhttp", version.ref = "okhttp" }
 okhttp-logging = { group = "com.squareup.okhttp3", name = "logging-interceptor", version.ref = "okhttp" }
+androidx-compose-material3 = { group = "androidx.compose.material3", name = "material3", version.ref = "material3" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

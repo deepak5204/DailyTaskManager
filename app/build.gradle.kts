@@ -53,6 +53,7 @@ android {
 
 dependencies {
 
+    implementation(libs.androidx.compose.material3)
     // Core
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
